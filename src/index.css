@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+/* Custom Ordino Theme */
+@theme {
+  --color-ordino-bg: #0f172a;
+  --color-ordino-card: #1e293b;
+  --color-ordino-card-hover: #334155;
+  --color-ordino-primary: #f97316;
+  --color-ordino-secondary: #3b82f6;
+  --color-ordino-success: #22c55e;
+  --color-ordino-warning: #eab308;
+  --color-ordino-error: #ef4444;
+  --color-ordino-text: #f8fafc;
+  --color-ordino-text-muted: #94a3b8;
+  --color-ordino-border: #334155;
+}
+
+/* Base styles */
+html, body, #root {
+  @apply min-h-screen bg-ordino-bg text-ordino-text;
+}
+
+body {
+  @apply m-0 font-sans antialiased;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  @apply w-2;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-ordino-bg;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-ordino-border rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-ordino-text-muted;
+}

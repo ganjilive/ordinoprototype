@@ -1,0 +1,66 @@
+import { lazy, Suspense } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { MainLayout } from './components/layout';
+
+// Lazy load pages for better initial load performance
+const Dashboard = lazy(() => import('./pages/Dashboard').then(m => ({ default: m.Dashboard })));
+const WorkflowDemo = lazy(() => import('./pages/WorkflowDemo').then(m => ({ default: m.WorkflowDemo })));
+const History = lazy(() => import('./pages/History').then(m => ({ default: m.History })));
+const Settings = lazy(() => import('./pages/Settings').then(m => ({ default: m.Settings })));
+
+// Loading fallback
+function PageLoader() {
+  return (
+    <div className="flex items-center justify-center h-64">
+      <div className="flex flex-col items-center gap-4">
+        <div className="w-8 h-8 border-2 border-ordino-primary border-t-transparent rounded-full animate-spin" />
+        <span className="text-sm text-ordino-text-muted">Loading...</span>
+      </div>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route element={<MainLayout />}>
+          <Route
+            path="/"
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <Dashboard />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/demo"
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <WorkflowDemo />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/history"
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <History />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <Settings />
+              </Suspense>
+            }
+          />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+export default App;
