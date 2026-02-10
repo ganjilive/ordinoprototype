@@ -11,10 +11,13 @@ interface WorkflowTimelineProps {
 const stepTitles = [
   'Requirement Detected',
   'Analyzing Requirement',
-  'Gaps Identified',
-  'Generating Test Plan',
-  'Awaiting Approval',
-  'Applying Updates',
+  'Test Plan Lookup',
+  'Review Drafted Test Design',
+  'Creating Test Design',
+  'Automation Evaluation',
+  'Drafting Automation Scripts',
+  'Approve Automation Scripts',
+  'Creating Automation Scripts',
   'Notifying Stakeholders',
 ];
 

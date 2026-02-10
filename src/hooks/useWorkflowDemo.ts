@@ -12,7 +12,7 @@ export interface WorkflowState {
   isComplete: boolean;
 }
 
-const TOTAL_STEPS = 7;
+const TOTAL_STEPS = 10;
 const AUTO_PLAY_DELAY = 3000;
 
 export function useWorkflowDemo() {

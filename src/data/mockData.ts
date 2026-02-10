@@ -353,3 +353,249 @@ export const generatedTestCases = [
     type: 'Functional',
   },
 ];
+
+// Test Plan Data
+export const testPlan = {
+  productName: 'Authentication System',
+  version: '2.1',
+  automationPercentageTarget: 75,
+  integrationTestRequired: true,
+  integrationTestDescription: 'All API endpoints must have integration tests',
+  databaseVerificationRequired: true,
+  databaseVerificationDescription: 'Verify user authentication state in database',
+  workflows: [
+    {
+      id: 'WF-001',
+      name: 'User Authentication Flow',
+      description: 'Complete user login and authentication process',
+      priority: 'High',
+    },
+    {
+      id: 'WF-002',
+      name: 'Two-Factor Authentication Setup',
+      description: 'User enables and configures 2FA',
+      priority: 'High',
+    },
+    {
+      id: 'WF-003',
+      name: 'Account Recovery Flow',
+      description: 'User recovers account using backup codes',
+      priority: 'Medium',
+    },
+  ],
+  highLevelScenarios: [
+    {
+      id: 'SC-001',
+      name: '2FA Setup Scenario',
+      description: 'User successfully sets up 2FA with authenticator app',
+      relatedWorkflow: 'WF-002',
+    },
+    {
+      id: 'SC-002',
+      name: '2FA Login Scenario',
+      description: 'User logs in with 2FA code',
+      relatedWorkflow: 'WF-001',
+    },
+    {
+      id: 'SC-003',
+      name: 'Backup Code Recovery Scenario',
+      description: 'User recovers account using backup codes',
+      relatedWorkflow: 'WF-003',
+    },
+  ],
+};
+
+// Test Design Data
+export const testDesign = {
+  id: 'TD-100',
+  name: 'Authentication Test Design',
+  connectedTestPlan: 'TP-100',
+  version: '1.3',
+  paths: [
+    {
+      id: 'PATH-001',
+      name: '2FA Setup Path',
+      description: 'Complete path for setting up 2FA',
+      scenarios: ['SC-001', 'SC-002'],
+      status: 'affected',
+      affectedReason: 'New requirement adds 2FA timeout scenarios',
+    },
+    {
+      id: 'PATH-002',
+      name: 'Login Flow Path',
+      description: 'Standard login authentication path',
+      scenarios: ['SC-002'],
+      status: 'affected',
+      affectedReason: 'Requires 2FA code validation step',
+    },
+    {
+      id: 'PATH-003',
+      name: 'Recovery Path',
+      description: 'Account recovery using backup codes',
+      scenarios: ['SC-003'],
+      status: 'not-affected',
+    },
+  ],
+};
+
+// Existing Test Cases
+export const existingTestCases = [
+  {
+    id: 'TC-EXIST-001',
+    title: 'Verify standard login flow',
+    description: 'User logs in with username and password',
+    connectedPathId: 'PATH-002',
+    testingMethod: 'automation',
+    status: 'active',
+    coverage: 'Login Flow Path',
+  },
+  {
+    id: 'TC-EXIST-002',
+    title: 'Verify password reset flow',
+    description: 'User resets password via email',
+    connectedPathId: 'PATH-003',
+    testingMethod: 'manual',
+    status: 'active',
+    coverage: 'Recovery Path',
+  },
+];
+
+// Drafted Test Cases
+export const draftedTestCases = [
+  {
+    id: 'TC-DRAFT-001',
+    title: 'Verify 2FA setup flow for new users',
+    description: 'User enables 2FA from account settings and scans QR code',
+    testingMethod: 'automation',
+    categorizationReason: 'High frequency scenario, suitable for automation',
+    priority: 'High',
+  },
+  {
+    id: 'TC-DRAFT-002',
+    title: 'Verify 2FA code validation (valid code)',
+    description: 'User enters valid 2FA code and successfully authenticates',
+    testingMethod: 'automation',
+    categorizationReason: 'Core functionality, needs automated regression testing',
+    priority: 'High',
+  },
+  {
+    id: 'TC-DRAFT-003',
+    title: 'Verify 2FA code validation (invalid code)',
+    description: 'User enters invalid 2FA code and receives error',
+    testingMethod: 'smoke',
+    categorizationReason: 'Critical error handling, smoke test coverage',
+    priority: 'High',
+  },
+  {
+    id: 'TC-DRAFT-004',
+    title: 'Verify 2FA recovery flow with backup codes',
+    description: 'User recovers account using backup codes when authenticator unavailable',
+    testingMethod: 'manual',
+    categorizationReason: 'Edge case scenario, manual testing sufficient',
+    priority: 'Medium',
+  },
+  {
+    id: 'TC-DRAFT-005',
+    title: 'Verify 2FA timeout after 30 seconds',
+    description: '2FA code expires after 30 seconds and user must request new code',
+    testingMethod: 'automation',
+    categorizationReason: 'Time-sensitive scenario, automation ensures consistency',
+    priority: 'Medium',
+  },
+  {
+    id: 'TC-DRAFT-006',
+    title: 'Verify 2FA disable with password verification',
+    description: 'User disables 2FA by providing password confirmation',
+    testingMethod: 'manual',
+    categorizationReason: 'Security-sensitive operation, manual verification preferred',
+    priority: 'Medium',
+  },
+];
+
+// Automation Requirements
+export const automationRequirements = {
+  automationTestCases: [
+    {
+      testCaseId: 'TC-DRAFT-001',
+      testCaseTitle: 'Verify 2FA setup flow for new users',
+      requiredInfo: {
+        uiDesignAccess: true,
+        testEnvironmentAccess: false,
+        apiDocumentation: false,
+        schemaInfo: false,
+      },
+      status: 'needs-ui-design',
+    },
+    {
+      testCaseId: 'TC-DRAFT-002',
+      testCaseTitle: 'Verify 2FA code validation (valid code)',
+      requiredInfo: {
+        uiDesignAccess: true,
+        testEnvironmentAccess: true,
+        apiDocumentation: false,
+        schemaInfo: false,
+      },
+      status: 'ready',
+    },
+    {
+      testCaseId: 'TC-DRAFT-005',
+      testCaseTitle: 'Verify 2FA timeout after 30 seconds',
+      requiredInfo: {
+        uiDesignAccess: false,
+        testEnvironmentAccess: true,
+        apiDocumentation: true,
+        schemaInfo: false,
+      },
+      status: 'ready',
+    },
+  ],
+  productDevelopmentStage: 'development',
+  uxDesignerContact: {
+    name: 'Jane Designer',
+    email: 'jane.designer@company.com',
+    slack: '@jane-designer',
+  },
+  testEnvironmentStatus: 'not-available',
+  figmaDesignLink: null,
+};
+
+// Automation Scripts
+export const automationScripts = [
+  {
+    id: 'SCRIPT-001',
+    testCaseId: 'TC-DRAFT-002',
+    testCaseTitle: 'Verify 2FA code validation (valid code)',
+    scriptType: 'Selenium',
+    framework: 'WebDriver',
+    status: 'drafted',
+    requiredInfoStatus: {
+      uiDesignAccess: 'available',
+      testEnvironmentAccess: 'available',
+    },
+  },
+  {
+    id: 'SCRIPT-002',
+    testCaseId: 'TC-DRAFT-005',
+    testCaseTitle: 'Verify 2FA timeout after 30 seconds',
+    scriptType: 'API Test',
+    framework: 'REST Assured',
+    status: 'drafted',
+    requiredInfoStatus: {
+      testEnvironmentAccess: 'available',
+      apiDocumentation: 'available',
+    },
+  },
+  {
+    id: 'SCRIPT-003',
+    testCaseId: 'TC-DRAFT-001',
+    testCaseTitle: 'Verify 2FA setup flow for new users',
+    scriptType: 'Selenium',
+    framework: 'WebDriver',
+    status: 'waiting-for-info',
+    requiredInfoStatus: {
+      uiDesignAccess: 'needed',
+      testEnvironmentAccess: 'not-available',
+    },
+    blockingReason: 'Waiting for Figma design file with UI locators',
+  },
+];

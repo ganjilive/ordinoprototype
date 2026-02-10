@@ -6,10 +6,13 @@ import { useWorkflowDemo } from '../../hooks/useWorkflowDemo';
 import {
   JiraRequirement,
   OrdinoThinking,
-  GapAnalysis,
-  TestPlanPreview,
-  ApprovalDialog,
-  SyncProgress,
+  TestPlanLookup,
+  DraftedTestDesignReview,
+  TestDesignCreation,
+  AutomationScriptEvaluation,
+  AutomationScriptDrafting,
+  AutomationScriptApproval,
+  AutomationScriptCreation,
   NotificationToast,
 } from './steps';
 
@@ -17,11 +20,14 @@ const stepDescriptions = [
   '',
   'A new requirement has been detected in Jira. Ordino is ready to analyze it.',
   'Ordino AI is analyzing the requirement to understand testability and identify coverage gaps.',
-  'Analysis complete! Ordino has identified gaps in the current test coverage.',
-  'Based on the analysis, Ordino is generating a comprehensive test plan.',
-  'The test plan is ready for your review. Approve to apply changes.',
-  'Approved! Ordino is now syncing the test cases to your connected tools.',
-  'Almost done! Ordino is notifying all relevant stakeholders about the updates.',
+  'Ordino is looking up the existing test plan, analyzing test designs, and drafting new test cases.',
+  'Review the drafted test design and test cases. Approve to proceed with creation.',
+  'Creating approved test design version and test cases.',
+  'Evaluating automation requirements and notifying UX designer for design access.',
+  'Drafting test automation scripts based on available information.',
+  'Review the drafted automation scripts. Approve to create them in the repository.',
+  'Creating approved automation scripts in the configured test script repository.',
+  'Notifying stakeholders with a summary of what was accomplished.',
 ];
 
 export function WorkflowDemoComponent() {
@@ -43,14 +49,20 @@ export function WorkflowDemoComponent() {
       case 2:
         return <OrdinoThinking />;
       case 3:
-        return <GapAnalysis />;
+        return <TestPlanLookup />;
       case 4:
-        return <TestPlanPreview />;
+        return <DraftedTestDesignReview onApprove={next} onReject={reset} />;
       case 5:
-        return <ApprovalDialog onApprove={next} onReject={reset} />;
+        return <TestDesignCreation />;
       case 6:
-        return <SyncProgress />;
+        return <AutomationScriptEvaluation />;
       case 7:
+        return <AutomationScriptDrafting />;
+      case 8:
+        return <AutomationScriptApproval onApprove={next} onReject={reset} />;
+      case 9:
+        return <AutomationScriptCreation />;
+      case 10:
         return <NotificationToast />;
       default:
         return null;
@@ -63,9 +75,9 @@ export function WorkflowDemoComponent() {
       <Card>
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-semibold text-ordino-text">Interactive Demo</h2>
+            <h2 className="text-lg font-semibold text-ordino-text">Create test automation scripts based on a new requirement</h2>
             <p className="text-sm text-ordino-text-muted">
-              Experience Ordino's autonomous QA workflow
+              Experience Ordino's autonomous test automation workflow
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -88,7 +100,7 @@ export function WorkflowDemoComponent() {
                   {isPlaying ? <Pause size={18} /> : <PlayCircle size={18} />}
                   {isPlaying ? 'Pause' : 'Auto-play'}
                 </Button>
-                <Button onClick={next} disabled={isComplete || currentStep === 5}>
+                <Button onClick={next} disabled={isComplete || currentStep === 4 || currentStep === 8}>
                   <SkipForward size={18} />
                   Next Step
                 </Button>
@@ -111,7 +123,7 @@ export function WorkflowDemoComponent() {
               <div className="mb-6">
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-xs font-medium text-ordino-primary uppercase tracking-wider">
-                    Step {currentStep} of 7
+                    Step {currentStep} of 10
                   </span>
                   {isComplete && (
                     <span className="text-xs font-medium text-ordino-success uppercase tracking-wider">
@@ -148,7 +160,7 @@ export function WorkflowDemoComponent() {
                     Workflow Complete!
                   </h3>
                   <p className="text-ordino-text-muted mb-4">
-                    Ordino has successfully processed the requirement, generated tests,
+                    Ordino has successfully created test automation scripts based on the requirement
                     and notified all stakeholders.
                   </p>
                   <Button onClick={reset}>
@@ -173,11 +185,11 @@ export function WorkflowDemoComponent() {
               <Play size={32} className="text-ordino-primary ml-1" />
             </div>
             <h3 className="text-2xl font-bold text-ordino-text mb-2">
-              Ready to Experience Ordino AI?
+              Ready to Create Test Automation Scripts?
             </h3>
             <p className="text-ordino-text-muted max-w-md mx-auto mb-6">
-              Watch how Ordino autonomously detects requirements, analyzes coverage gaps,
-              generates test plans, and keeps your team in sync.
+              Watch how Ordino autonomously analyzes requirements, creates test designs,
+              drafts automation scripts, and creates them in your repository.
             </p>
             <Button size="lg" onClick={start}>
               <Play size={20} />

@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bell, CheckCircle, MessageSquare, Mail, Users } from 'lucide-react';
+import { Bell, CheckCircle, MessageSquare, Mail, Users, FileText, Code, GitBranch } from 'lucide-react';
+import { testDesign, draftedTestCases, automationScripts } from '../../../data/mockData';
+
+const readyScripts = automationScripts.filter(s => s.status === 'drafted');
 
 const notifications = [
   {
@@ -8,7 +11,7 @@ const notifications = [
     channel: 'Slack',
     icon: MessageSquare,
     recipient: '#qa-team',
-    message: 'New test plan approved for ORD-1234',
+    message: `Test design v${testDesign.version} created with ${draftedTestCases.length} new test cases`,
     color: 'bg-pink-500',
   },
   {
@@ -16,7 +19,7 @@ const notifications = [
     channel: 'Email',
     icon: Mail,
     recipient: 'product-team@company.com',
-    message: 'Test coverage increased by 12%',
+    message: `${readyScripts.length} automation scripts created in test-automation-repo`,
     color: 'bg-blue-500',
   },
   {
@@ -24,7 +27,7 @@ const notifications = [
     channel: 'Slack',
     icon: MessageSquare,
     recipient: '@john.smith',
-    message: 'Your requirement ORD-1234 has new test cases',
+    message: 'Automation scripts ready for ORD-1234: 2FA authentication feature',
     color: 'bg-pink-500',
   },
 ];
@@ -121,14 +124,40 @@ export function NotificationToast() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="max-w-md mx-auto p-4 bg-ordino-card rounded-xl border border-ordino-border"
+          className="max-w-md mx-auto space-y-4"
         >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Users size={16} className="text-ordino-text-muted" />
-              <span className="text-sm text-ordino-text-muted">Recipients notified</span>
+          {/* Workflow Summary */}
+          <div className="p-4 bg-ordino-success/10 rounded-xl border border-ordino-success/20">
+            <h4 className="text-sm font-semibold text-ordino-text mb-3">Workflow Summary</h4>
+            <div className="space-y-2 text-xs text-ordino-text-muted">
+              <div className="flex items-center gap-2">
+                <FileText size={14} className="text-ordino-success" />
+                <span>Test Design v{testDesign.version} created</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle size={14} className="text-ordino-success" />
+                <span>{draftedTestCases.length} test cases created</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Code size={14} className="text-ordino-success" />
+                <span>{readyScripts.length} automation scripts created</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <GitBranch size={14} className="text-ordino-success" />
+                <span>Scripts available in test-automation-repo</span>
+              </div>
             </div>
-            <span className="text-sm font-medium text-ordino-text">{notifications.length}</span>
+          </div>
+
+          {/* Recipients Summary */}
+          <div className="p-4 bg-ordino-card rounded-xl border border-ordino-border">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Users size={16} className="text-ordino-text-muted" />
+                <span className="text-sm text-ordino-text-muted">Recipients notified</span>
+              </div>
+              <span className="text-sm font-medium text-ordino-text">{notifications.length}</span>
+            </div>
           </div>
         </motion.div>
       )}

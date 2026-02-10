@@ -1,7 +1,10 @@
 export { JiraRequirement } from './JiraRequirement';
 export { OrdinoThinking } from './OrdinoThinking';
-export { GapAnalysis } from './GapAnalysis';
-export { TestPlanPreview } from './TestPlanPreview';
-export { ApprovalDialog } from './ApprovalDialog';
-export { SyncProgress } from './SyncProgress';
+export { TestPlanLookup } from './TestPlanLookup';
+export { DraftedTestDesignReview } from './DraftedTestDesignReview';
+export { TestDesignCreation } from './TestDesignCreation';
+export { AutomationScriptEvaluation } from './AutomationScriptEvaluation';
+export { AutomationScriptDrafting } from './AutomationScriptDrafting';
+export { AutomationScriptApproval } from './AutomationScriptApproval';
+export { AutomationScriptCreation } from './AutomationScriptCreation';
 export { NotificationToast } from './NotificationToast';
