@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle, Loader2, Code, AlertTriangle, FileCode, Zap } from 'lucide-react';
+import { CheckCircle, Loader2, Code, AlertTriangle } from 'lucide-react';
 import { Badge } from '../../common';
 import { automationScripts } from '../../../data/mockData';
 

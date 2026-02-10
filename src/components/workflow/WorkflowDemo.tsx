@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, SkipForward, RotateCcw, Pause, PlayCircle } from 'lucide-react';
+import { Play, SkipForward, RotateCcw, Pause, PlayCircle, AlertCircle } from 'lucide-react';
 import { Button, Card } from '../common';
 import { WorkflowTimeline } from './WorkflowTimeline';
 import { useWorkflowDemo } from '../../hooks/useWorkflowDemo';
@@ -14,20 +14,34 @@ import {
   AutomationScriptApproval,
   AutomationScriptCreation,
   NotificationToast,
+  RequirementsTriage,
+  TriageApproval,
+  TestDesignDrafting,
+  PeerReview,
+  TestDataStrategy,
+  TestDataApproval,
+  BlockerDisplay,
 } from './steps';
+import { sampleBlockers } from '../../data/mockData';
 
 const stepDescriptions = [
   '',
   'A new requirement has been detected in Jira. Ordino is ready to analyze it.',
   'Ordino AI is analyzing the requirement to understand testability and identify coverage gaps.',
-  'Ordino is looking up the existing test plan, analyzing test designs, and drafting new test cases.',
-  'Review the drafted test design and test cases. Approve to proceed with creation.',
+  'Assessing requirement completeness, testability, and dependencies before proceeding.',
+  'Multi-level approval process to validate triage results and authorize test design.',
+  'Looking up existing test plan to understand current test coverage and design patterns.',
+  'Drafting test design with early automation feasibility assessment for each test case.',
+  'Peer review of the drafted test design for completeness and automation strategy.',
+  'Lead review incorporating peer feedback and finalizing test design approach.',
+  'Defining test data requirements, generation strategy, and privacy compliance.',
+  'Reviewing and approving test data strategy to ensure data availability.',
   'Creating approved test design version and test cases.',
-  'Evaluating automation requirements and notifying UX designer for design access.',
-  'Drafting test automation scripts based on available information.',
+  'Drafting test automation scripts based on available information and approved design.',
   'Review the drafted automation scripts. Approve to create them in the repository.',
   'Creating approved automation scripts in the configured test script repository.',
   'Notifying stakeholders with a summary of what was accomplished.',
+  'Workflow complete! All test designs and automation scripts have been created.',
 ];
 
 export function WorkflowDemoComponent() {
@@ -36,10 +50,15 @@ export function WorkflowDemoComponent() {
     steps,
     isPlaying,
     isComplete,
+    isBlocked,
+    activeBlockers,
     start,
     next,
     reset,
     toggleAutoPlay,
+    triggerBlocker,
+    resolveBlocker,
+    escalate,
   } = useWorkflowDemo();
 
   const renderStepContent = () => {
@@ -49,25 +68,58 @@ export function WorkflowDemoComponent() {
       case 2:
         return <OrdinoThinking />;
       case 3:
-        return <TestPlanLookup />;
+        return <RequirementsTriage />;
       case 4:
-        return <DraftedTestDesignReview onApprove={next} onReject={reset} />;
+        return <TriageApproval onApprove={next} onReject={reset} />;
       case 5:
-        return <TestDesignCreation />;
+        return <TestPlanLookup />;
       case 6:
-        return <AutomationScriptEvaluation />;
+        return <TestDesignDrafting />;
       case 7:
-        return <AutomationScriptDrafting />;
+        return <PeerReview onApprove={next} onReject={reset} />;
       case 8:
-        return <AutomationScriptApproval onApprove={next} onReject={reset} />;
+        return <DraftedTestDesignReview onApprove={next} onReject={reset} />;
       case 9:
-        return <AutomationScriptCreation />;
+        return <TestDataStrategy />;
       case 10:
+        return <TestDataApproval onApprove={next} onReject={reset} />;
+      case 11:
+        return <TestDesignCreation />;
+      case 12:
+        return <AutomationScriptDrafting />;
+      case 13:
+        return <AutomationScriptApproval onApprove={next} onReject={reset} />;
+      case 14:
+        return <AutomationScriptCreation />;
+      case 15:
         return <NotificationToast />;
+      case 16:
+        return (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="text-center py-12"
+          >
+            <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-ordino-success/20 flex items-center justify-center">
+              <svg className="w-10 h-10 text-ordino-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <h3 className="text-2xl font-bold text-ordino-success mb-2">
+              Workflow Complete!
+            </h3>
+            <p className="text-ordino-text-muted max-w-md mx-auto">
+              All test designs and automation scripts have been created successfully.
+            </p>
+          </motion.div>
+        );
       default:
         return null;
     }
   };
+
+  // Determine which steps should disable the Next button (approval steps or blocked)
+  const isApprovalStep = currentStep === 4 || currentStep === 7 || currentStep === 8 || currentStep === 10 || currentStep === 13;
 
   return (
     <div className="space-y-6">
@@ -75,9 +127,9 @@ export function WorkflowDemoComponent() {
       <Card>
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-semibold text-ordino-text">Create test automation scripts based on a new requirement</h2>
+            <h2 className="text-lg font-semibold text-ordino-text">Enhanced QA Workflow Demo</h2>
             <p className="text-sm text-ordino-text-muted">
-              Experience Ordino's autonomous test automation workflow
+              Experience Ordino's comprehensive test automation workflow with realistic QA operations
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -100,7 +152,18 @@ export function WorkflowDemoComponent() {
                   {isPlaying ? <Pause size={18} /> : <PlayCircle size={18} />}
                   {isPlaying ? 'Pause' : 'Auto-play'}
                 </Button>
-                <Button onClick={next} disabled={isComplete || currentStep === 4 || currentStep === 8}>
+                {currentStep > 0 && !isBlocked && (
+                  <Button
+                    variant="ghost"
+                    onClick={() => triggerBlocker(sampleBlockers[0])}
+                    size="sm"
+                    className="border border-ordino-error/20 text-ordino-error hover:bg-ordino-error/10"
+                  >
+                    <AlertCircle size={16} />
+                    Trigger Blocker (Demo)
+                  </Button>
+                )}
+                <Button onClick={next} disabled={isComplete || isApprovalStep || isBlocked}>
                   <SkipForward size={18} />
                   Next Step
                 </Button>
@@ -118,12 +181,27 @@ export function WorkflowDemoComponent() {
 
           {/* Step visualization */}
           <div className="flex-1">
+            {/* Blocker Overlay */}
+            {isBlocked && activeBlockers.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: -50 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -50 }}
+                className="mb-4"
+              >
+                <BlockerDisplay
+                  blocker={activeBlockers[0]}
+                  onResolve={resolveBlocker}
+                  onEscalate={escalate}
+                />
+              </motion.div>
+            )}
             <Card className="min-h-[500px]">
               {/* Step header */}
               <div className="mb-6">
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-xs font-medium text-ordino-primary uppercase tracking-wider">
-                    Step {currentStep} of 10
+                    Step {currentStep} of 16
                   </span>
                   {isComplete && (
                     <span className="text-xs font-medium text-ordino-success uppercase tracking-wider">
@@ -160,8 +238,8 @@ export function WorkflowDemoComponent() {
                     Workflow Complete!
                   </h3>
                   <p className="text-ordino-text-muted mb-4">
-                    Ordino has successfully created test automation scripts based on the requirement
-                    and notified all stakeholders.
+                    Ordino has successfully completed the enhanced QA workflow including requirements triage,
+                    multi-level approvals, test data strategy, and automation script creation.
                   </p>
                   <Button onClick={reset}>
                     <RotateCcw size={18} />
@@ -185,11 +263,11 @@ export function WorkflowDemoComponent() {
               <Play size={32} className="text-ordino-primary ml-1" />
             </div>
             <h3 className="text-2xl font-bold text-ordino-text mb-2">
-              Ready to Create Test Automation Scripts?
+              Ready for Enhanced QA Workflow?
             </h3>
             <p className="text-ordino-text-muted max-w-md mx-auto mb-6">
-              Watch how Ordino autonomously analyzes requirements, creates test designs,
-              drafts automation scripts, and creates them in your repository.
+              Watch how Ordino handles requirements triage, multi-level approvals, test data management,
+              and comprehensive test automation with realistic QA practices.
             </p>
             <Button size="lg" onClick={start}>
               <Play size={20} />

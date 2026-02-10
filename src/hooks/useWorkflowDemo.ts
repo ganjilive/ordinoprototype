@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
+import type { Blocker, RevisionRequest, ApprovalHistoryEntry } from '../types';
 
 export type WorkflowStepStatus = 'pending' | 'active' | 'completed';
 
@@ -10,9 +11,28 @@ export interface WorkflowState {
   }[];
   isPlaying: boolean;
   isComplete: boolean;
+
+  // Approval tracking
+  currentApprovalLevel: number;
+  maxApprovalLevels: number;
+  approvalHistory: ApprovalHistoryEntry[];
+
+  // Revision tracking
+  revisionRequests: RevisionRequest[];
+  isRevisionRequested: boolean;
+
+  // Blocker tracking
+  activeBlockers: Blocker[];
+  isBlocked: boolean;
+  escalationActive: boolean;
+
+  // Step completions
+  triageCompleted: boolean;
+  peerReviewCompleted: boolean;
+  testDataStrategyApproved: boolean;
 }
 
-const TOTAL_STEPS = 10;
+const TOTAL_STEPS = 16;
 const AUTO_PLAY_DELAY = 3000;
 
 export function useWorkflowDemo() {
@@ -24,6 +44,25 @@ export function useWorkflowDemo() {
     })),
     isPlaying: false,
     isComplete: false,
+
+    // Approval tracking
+    currentApprovalLevel: 0,
+    maxApprovalLevels: 3,
+    approvalHistory: [],
+
+    // Revision tracking
+    revisionRequests: [],
+    isRevisionRequested: false,
+
+    // Blocker tracking
+    activeBlockers: [],
+    isBlocked: false,
+    escalationActive: false,
+
+    // Step completions
+    triageCompleted: false,
+    peerReviewCompleted: false,
+    testDataStrategyApproved: false,
   });
 
   const autoPlayRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -37,6 +76,17 @@ export function useWorkflowDemo() {
       })),
       isPlaying: false,
       isComplete: false,
+      currentApprovalLevel: 0,
+      maxApprovalLevels: 3,
+      approvalHistory: [],
+      revisionRequests: [],
+      isRevisionRequested: false,
+      activeBlockers: [],
+      isBlocked: false,
+      escalationActive: false,
+      triageCompleted: false,
+      peerReviewCompleted: false,
+      testDataStrategyApproved: false,
     });
   }, []);
 
@@ -77,6 +127,17 @@ export function useWorkflowDemo() {
       })),
       isPlaying: false,
       isComplete: false,
+      currentApprovalLevel: 0,
+      maxApprovalLevels: 3,
+      approvalHistory: [],
+      revisionRequests: [],
+      isRevisionRequested: false,
+      activeBlockers: [],
+      isBlocked: false,
+      escalationActive: false,
+      triageCompleted: false,
+      peerReviewCompleted: false,
+      testDataStrategyApproved: false,
     });
   }, []);
 
@@ -89,9 +150,48 @@ export function useWorkflowDemo() {
     });
   }, []);
 
+  const requestRevision = useCallback((stepId: number, request: RevisionRequest) => {
+    setState((prev) => ({
+      ...prev,
+      revisionRequests: [...prev.revisionRequests, request],
+      isRevisionRequested: true,
+    }));
+  }, []);
+
+  const triggerBlocker = useCallback((blocker: Blocker) => {
+    setState((prev) => ({
+      ...prev,
+      activeBlockers: [...prev.activeBlockers, blocker],
+      isBlocked: true,
+      isPlaying: false,
+    }));
+  }, []);
+
+  const resolveBlocker = useCallback((blockerId: string) => {
+    setState((prev) => ({
+      ...prev,
+      activeBlockers: prev.activeBlockers.filter((b) => b.id !== blockerId),
+      isBlocked: prev.activeBlockers.length > 1,
+    }));
+  }, []);
+
+  const escalate = useCallback(() => {
+    setState((prev) => ({
+      ...prev,
+      escalationActive: true,
+    }));
+  }, []);
+
+  const advanceApprovalLevel = useCallback(() => {
+    setState((prev) => ({
+      ...prev,
+      currentApprovalLevel: prev.currentApprovalLevel + 1,
+    }));
+  }, []);
+
   // Auto-play effect
   useEffect(() => {
-    if (state.isPlaying && !state.isComplete) {
+    if (state.isPlaying && !state.isComplete && !state.isBlocked) {
       autoPlayRef.current = setInterval(() => {
         next();
       }, AUTO_PLAY_DELAY);
@@ -105,7 +205,7 @@ export function useWorkflowDemo() {
         clearInterval(autoPlayRef.current);
       }
     };
-  }, [state.isPlaying, state.isComplete, next]);
+  }, [state.isPlaying, state.isComplete, state.isBlocked, next]);
 
   // Stop auto-play when complete
   useEffect(() => {
@@ -120,5 +220,10 @@ export function useWorkflowDemo() {
     next,
     reset,
     toggleAutoPlay,
+    requestRevision,
+    triggerBlocker,
+    resolveBlocker,
+    escalate,
+    advanceApprovalLevel,
   };
 }

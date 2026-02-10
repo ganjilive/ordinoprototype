@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle, XCircle, AlertTriangle, FileText, Monitor, Database, Code, Mail, MessageSquare } from 'lucide-react';
+import { CheckCircle, XCircle, AlertTriangle, Monitor, Code, MessageSquare } from 'lucide-react';
 import { Badge } from '../../common';
-import { automationRequirements, draftedTestCases } from '../../../data/mockData';
+import { automationRequirements } from '../../../data/mockData';
 
 export function AutomationScriptEvaluation() {
   const [evaluationProgress, setEvaluationProgress] = useState(0);
@@ -30,8 +30,6 @@ export function AutomationScriptEvaluation() {
       }, 1000);
     }
   }, [evaluationProgress, notificationSent]);
-
-  const automationTestCases = draftedTestCases.filter(tc => tc.testingMethod === 'automation');
 
   return (
     <motion.div
@@ -71,7 +69,6 @@ export function AutomationScriptEvaluation() {
         <h4 className="font-semibold text-ordino-text mb-4">Automation Test Cases Analysis</h4>
         <div className="space-y-4">
           {automationRequirements.automationTestCases.map((testCase, index) => {
-            const testCaseInfo = automationTestCases.find(tc => tc.id === testCase.testCaseId);
             const isReady = testCase.status === 'ready';
             const needsInfo = testCase.status === 'needs-ui-design';
 

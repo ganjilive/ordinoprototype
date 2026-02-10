@@ -11,14 +11,20 @@ interface WorkflowTimelineProps {
 const stepTitles = [
   'Requirement Detected',
   'Analyzing Requirement',
+  'Requirements Triage',
+  'Triage Approval',
   'Test Plan Lookup',
-  'Review Drafted Test Design',
+  'Test Design Drafting',
+  'Peer Review',
+  'Lead Review',
+  'Test Data Strategy',
+  'Test Data Approval',
   'Creating Test Design',
-  'Automation Evaluation',
-  'Drafting Automation Scripts',
-  'Approve Automation Scripts',
-  'Creating Automation Scripts',
-  'Notifying Stakeholders',
+  'Script Drafting',
+  'Script Approval',
+  'Creating Scripts',
+  'Notification',
+  'Complete',
 ];
 
 export function WorkflowTimeline({ steps, currentStep }: WorkflowTimelineProps) {

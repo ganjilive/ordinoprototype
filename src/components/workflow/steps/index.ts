@@ -1,3 +1,4 @@
+// Existing exports
 export { JiraRequirement } from './JiraRequirement';
 export { OrdinoThinking } from './OrdinoThinking';
 export { TestPlanLookup } from './TestPlanLookup';
@@ -8,3 +9,15 @@ export { AutomationScriptDrafting } from './AutomationScriptDrafting';
 export { AutomationScriptApproval } from './AutomationScriptApproval';
 export { AutomationScriptCreation } from './AutomationScriptCreation';
 export { NotificationToast } from './NotificationToast';
+export { TestCaseDetail } from './TestCaseDetail';
+export { TraceabilityMatrix } from './TraceabilityMatrix';
+export { CoverageAnalysis } from './CoverageAnalysis';
+
+// Enhanced workflow exports
+export { RequirementsTriage } from './RequirementsTriage';
+export { TriageApproval } from './TriageApproval';
+export { TestDesignDrafting } from './TestDesignDrafting';
+export { PeerReview } from './PeerReview';
+export { TestDataStrategy } from './TestDataStrategy';
+export { TestDataApproval } from './TestDataApproval';
+export { BlockerDisplay } from './BlockerDisplay';

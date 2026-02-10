@@ -86,3 +86,129 @@ export interface TrendDataPoint {
   passRate: number;
   automation: number;
 }
+
+// Enhanced Workflow Types
+export interface Gap {
+  id: number;
+  type: string;
+  description: string;
+  severity: 'High' | 'Medium' | 'Low';
+}
+
+export interface Dependency {
+  id: number;
+  name: string;
+  status: 'Available' | 'In Progress' | 'Blocked';
+}
+
+export interface RiskFlag {
+  type: string;
+  description: string;
+  impact: 'High' | 'Medium' | 'Low';
+}
+
+export interface TriageAnalysis {
+  requirementId: string;
+  completenessScore: number;
+  testabilityLevel: 'High' | 'Medium' | 'Low';
+  gaps: Gap[];
+  dependencies: Dependency[];
+  riskFlags: RiskFlag[];
+  estimatedTestingEffort: string;
+  recommendedApproach: string;
+}
+
+export interface ApprovalChainEntry {
+  id: number;
+  role: string;
+  name: string;
+  status: 'pending' | 'approved' | 'rejected' | 'revision';
+  order: number;
+  timestamp?: Date;
+}
+
+export interface ApprovalHistoryEntry {
+  id: string;
+  stepId: number;
+  approver: string;
+  action: 'approved' | 'rejected' | 'revision';
+  timestamp: Date;
+  comments?: string;
+}
+
+export interface TestCaseFeasibility {
+  testCaseId: string;
+  feasibilityScore: number;
+  recommendedFramework: string;
+  browserCompatibility: string[];
+  estimatedROI: 'High' | 'Medium' | 'Low';
+  complexity: 'High' | 'Medium' | 'Low';
+  maintenanceRisk: 'High' | 'Medium' | 'Low';
+}
+
+export interface FrameworkRecommendation {
+  primary: string;
+  alternative: string;
+  reasoning: string;
+}
+
+export interface AutomationFeasibility {
+  overallScore: number;
+  testCases: TestCaseFeasibility[];
+  frameworkRecommendation: FrameworkRecommendation;
+}
+
+export interface DataRequirement {
+  entity: string;
+  volume: string;
+  type: string;
+}
+
+export interface TestDataStrategy {
+  requirements: DataRequirement[];
+  generationStrategy: string;
+  privacyCompliance: string[];
+  dataRefreshFrequency: string;
+  setupScripts: string[];
+  teardownScripts: string[];
+  dependencies: string[];
+}
+
+export interface Blocker {
+  id: string;
+  type: 'Ambiguous Requirement' | 'Missing Dependency' | 'Resource Unavailable';
+  description: string;
+  impact: string;
+  owner: string;
+  status: 'Active' | 'Escalated' | 'Resolved';
+  createdAt: Date;
+  escalationLevel: number;
+  estimatedResolutionTime: string;
+}
+
+export interface RevisionRequest {
+  id: string;
+  stepId: number;
+  category: string;
+  comments: string;
+  severity: 'Minor' | 'Major' | 'Blocker';
+  requestedBy: string;
+  requestedAt: Date;
+}
+
+export interface EscalationChainEntry {
+  level: number;
+  role: string;
+  name: string;
+  slaHours: number;
+  status: 'pending' | 'current' | 'completed';
+}
+
+export interface CommunicationLogEntry {
+  id: number;
+  timestamp: Date;
+  from: string;
+  to: string;
+  channel: 'slack' | 'email';
+  message: string;
+}

@@ -22,7 +22,7 @@ const creationTasks = readyScripts.map((script, index) => ({
 }));
 
 export function AutomationScriptCreation() {
-  const [completedTasks, setCompletedTasks] = useState<number[]>([]);
+  const [completedTasks, setCompletedTasks] = useState<string[]>([]);
 
   useEffect(() => {
     creationTasks.forEach((task) => {
@@ -91,7 +91,6 @@ export function AutomationScriptCreation() {
       {/* Script Creation Tasks */}
       <div className="max-w-md mx-auto space-y-4">
         {creationTasks.map((task) => {
-          const script = automationScripts.find(s => s.id === task.id);
           const isComplete = completedTasks.includes(task.id);
 
           return (

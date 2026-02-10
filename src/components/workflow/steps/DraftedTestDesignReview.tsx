@@ -1,7 +1,9 @@
-import { motion } from 'framer-motion';
-import { CheckCircle, XCircle, Clock, User, FileText, GitBranch, AlertCircle } from 'lucide-react';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { CheckCircle, XCircle, Clock, User, FileText, GitBranch, AlertCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import { Button, Badge } from '../../common';
 import { testDesign, draftedTestCases } from '../../../data/mockData';
+import { TestCaseDetail } from './TestCaseDetail';
 
 interface DraftedTestDesignReviewProps {
   onApprove?: () => void;
@@ -9,11 +11,22 @@ interface DraftedTestDesignReviewProps {
 }
 
 export function DraftedTestDesignReview({ onApprove, onReject }: DraftedTestDesignReviewProps) {
+  const [expandedTestCases, setExpandedTestCases] = useState<Set<string>>(new Set());
   const affectedPaths = testDesign.paths.filter(p => p.status === 'affected');
   const testCasesByMethod = {
     automation: draftedTestCases.filter(tc => tc.testingMethod === 'automation').length,
     manual: draftedTestCases.filter(tc => tc.testingMethod === 'manual').length,
     smoke: draftedTestCases.filter(tc => tc.testingMethod === 'smoke').length,
+  };
+
+  const toggleTestCase = (testCaseId: string) => {
+    const newSet = new Set(expandedTestCases);
+    if (newSet.has(testCaseId)) {
+      newSet.delete(testCaseId);
+    } else {
+      newSet.add(testCaseId);
+    }
+    setExpandedTestCases(newSet);
   };
 
   return (
@@ -82,29 +95,61 @@ export function DraftedTestDesignReview({ onApprove, onReject }: DraftedTestDesi
               <FileText size={18} className="text-ordino-primary" />
               <h4 className="font-semibold text-ordino-text">Drafted Test Cases</h4>
             </div>
-            <div className="space-y-2 max-h-48 overflow-y-auto">
+            <div className="space-y-2 max-h-[600px] overflow-y-auto">
               {draftedTestCases.map((testCase) => {
                 const methodColors = {
                   automation: 'success',
                   manual: 'info',
                   smoke: 'warning',
                 } as const;
+                const isExpanded = expandedTestCases.has(testCase.id);
 
                 return (
                   <div
                     key={testCase.id}
-                    className="p-3 bg-ordino-card rounded-lg border border-ordino-border"
+                    className="bg-ordino-card rounded-lg border border-ordino-border overflow-hidden"
                   >
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-xs font-mono text-ordino-primary">{testCase.id}</span>
-                      <Badge
-                        variant={methodColors[testCase.testingMethod as keyof typeof methodColors] || 'default'}
-                        size="sm"
-                      >
-                        {testCase.testingMethod}
-                      </Badge>
-                    </div>
-                    <p className="text-xs text-ordino-text">{testCase.title}</p>
+                    <button
+                      onClick={() => toggleTestCase(testCase.id)}
+                      className="w-full p-3 flex items-center justify-between hover:bg-ordino-bg transition-colors"
+                    >
+                      <div className="flex items-center gap-3 flex-1 text-left">
+                        <span className="text-xs font-mono text-ordino-primary">{testCase.id}</span>
+                        <p className="text-xs text-ordino-text flex-1">{testCase.title}</p>
+                        <Badge
+                          variant={methodColors[testCase.testingMethod as keyof typeof methodColors] || 'default'}
+                          size="sm"
+                        >
+                          {testCase.testingMethod}
+                        </Badge>
+                        <Badge
+                          variant={testCase.priority === 'High' ? 'error' : 'default'}
+                          size="sm"
+                        >
+                          {testCase.priority}
+                        </Badge>
+                      </div>
+                      {isExpanded ? (
+                        <ChevronUp size={16} className="text-ordino-text-muted ml-2" />
+                      ) : (
+                        <ChevronDown size={16} className="text-ordino-text-muted ml-2" />
+                      )}
+                    </button>
+                    <AnimatePresence>
+                      {isExpanded && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.2 }}
+                          className="overflow-hidden"
+                        >
+                          <div className="p-3 pt-0 border-t border-ordino-border">
+                            <TestCaseDetail testCase={testCase} />
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
                 );
               })}

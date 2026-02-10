@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle, Loader2, FileText, GitBranch, Database } from 'lucide-react';
+import { CheckCircle, Loader2, FileText, GitBranch } from 'lucide-react';
 import { testDesign, draftedTestCases } from '../../../data/mockData';
 
 const creationTasks = [
