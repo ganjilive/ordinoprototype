@@ -9,7 +9,6 @@ import {
   TestPlanLookup,
   DraftedTestDesignReview,
   TestDesignCreation,
-  AutomationScriptEvaluation,
   AutomationScriptDrafting,
   AutomationScriptApproval,
   AutomationScriptCreation,

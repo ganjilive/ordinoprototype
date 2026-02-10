@@ -150,7 +150,7 @@ export function useWorkflowDemo() {
     });
   }, []);
 
-  const requestRevision = useCallback((stepId: number, request: RevisionRequest) => {
+  const requestRevision = useCallback((_stepId: number, request: RevisionRequest) => {
     setState((prev) => ({
       ...prev,
       revisionRequests: [...prev.revisionRequests, request],

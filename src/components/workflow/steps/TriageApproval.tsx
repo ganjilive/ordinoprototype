@@ -9,9 +9,13 @@ interface TriageApprovalProps {
   onReject: () => void;
 }
 
+type ApprovalEntry =
+  | { id: number; role: string; name: string; order: number; status: 'pending' }
+  | { id: number; role: string; name: string; order: number; status: 'approved'; timestamp: Date };
+
 export function TriageApproval({ onApprove, onReject }: TriageApprovalProps) {
   const [currentLevel, setCurrentLevel] = useState(0);
-  const [approvalStates, setApprovalStates] = useState(
+  const [approvalStates, setApprovalStates] = useState<ApprovalEntry[]>(
     approvalChains.triage.map((entry) => ({ ...entry, status: 'pending' as const }))
   );
 
@@ -151,7 +155,7 @@ export function TriageApproval({ onApprove, onReject }: TriageApprovalProps) {
                     {entry.name}
                   </p>
                   <p className="text-xs text-ordino-text-muted">{entry.role}</p>
-                  {entry.timestamp && (
+                  {'timestamp' in entry && entry.timestamp && (
                     <p className="text-xs text-ordino-success mt-1">
                       Approved
                     </p>

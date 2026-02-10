@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 
 interface BadgeProps {
   children: ReactNode;
-  variant?: 'default' | 'success' | 'warning' | 'error' | 'info';
+  variant?: 'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'info';
   size?: 'sm' | 'md';
   className?: string;
 }
@@ -11,6 +11,8 @@ interface BadgeProps {
 export function Badge({ children, variant = 'default', size = 'md', className }: BadgeProps) {
   const variants = {
     default: 'bg-ordino-card text-ordino-text-muted border-ordino-border',
+    primary: 'bg-ordino-primary/20 text-ordino-primary border-ordino-primary/30',
+    secondary: 'bg-ordino-secondary/20 text-ordino-secondary border-ordino-secondary/30',
     success: 'bg-green-500/20 text-green-400 border-green-500/30',
     warning: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
     error: 'bg-red-500/20 text-red-400 border-red-500/30',
