@@ -6,19 +6,16 @@ import { useWorkflowDemo } from '../../hooks/useWorkflowDemo';
 import {
   JiraRequirement,
   OrdinoThinking,
-  TestPlanLookup,
-  DraftedTestDesignReview,
-  TestDesignCreation,
+  TriageApproval,
+  TestArtifactLookup,
+  TestDesignDrafting,
+  TestDesignReview,
+  TestArtifactCreation,
+  TestDataStrategy,
   AutomationScriptDrafting,
   AutomationScriptApproval,
   AutomationScriptCreation,
   NotificationToast,
-  RequirementsTriage,
-  TriageApproval,
-  TestDesignDrafting,
-  PeerReview,
-  TestDataStrategy,
-  TestDataApproval,
   BlockerDisplay,
 } from './steps';
 import { sampleBlockers } from '../../data/mockData';
@@ -26,21 +23,17 @@ import { sampleBlockers } from '../../data/mockData';
 const stepDescriptions = [
   '',
   'A new requirement has been detected in Jira. Ordino is ready to analyze it.',
-  'Ordino AI is analyzing the requirement to understand testability and identify coverage gaps.',
-  'Assessing requirement completeness, testability, and dependencies before proceeding.',
+  'Ordino AI is analyzing the requirement and performing triage assessment.',
   'Multi-level approval process to validate triage results and authorize test design.',
-  'Looking up existing test plan to understand current test coverage and design patterns.',
-  'Drafting test design with early automation feasibility assessment for each test case.',
-  'Peer review of the drafted test design for completeness and automation strategy.',
-  'Lead review incorporating peer feedback and finalizing test design approach.',
+  'Looking up existing test artifacts to understand current coverage and identify gaps.',
+  'Drafting test design with scenarios, paths, test cases, and coverage analysis.',
+  'Combined peer and lead review of the drafted test design.',
+  'Creating approved test plan, test design, and test cases in the repository.',
   'Defining test data requirements, generation strategy, and privacy compliance.',
-  'Reviewing and approving test data strategy to ensure data availability.',
-  'Creating approved test design version and test cases.',
-  'Drafting test automation scripts based on available information and approved design.',
+  'Drafting test automation scripts based on approved design.',
   'Review the drafted automation scripts. Approve to create them in the repository.',
   'Creating approved automation scripts in the configured test script repository.',
   'Notifying stakeholders with a summary of what was accomplished.',
-  'Workflow complete! All test designs and automation scripts have been created.',
 ];
 
 export function WorkflowDemoComponent() {
@@ -67,58 +60,33 @@ export function WorkflowDemoComponent() {
       case 2:
         return <OrdinoThinking />;
       case 3:
-        return <RequirementsTriage />;
-      case 4:
         return <TriageApproval onApprove={next} onReject={reset} />;
+      case 4:
+        return <TestArtifactLookup />;
       case 5:
-        return <TestPlanLookup />;
-      case 6:
         return <TestDesignDrafting />;
+      case 6:
+        return <TestDesignReview onApprove={next} onReject={reset} />;
       case 7:
-        return <PeerReview onApprove={next} onReject={reset} />;
+        return <TestArtifactCreation />;
       case 8:
-        return <DraftedTestDesignReview onApprove={next} onReject={reset} />;
-      case 9:
         return <TestDataStrategy />;
-      case 10:
-        return <TestDataApproval onApprove={next} onReject={reset} />;
-      case 11:
-        return <TestDesignCreation />;
-      case 12:
+      case 9:
         return <AutomationScriptDrafting />;
-      case 13:
+      case 10:
         return <AutomationScriptApproval onApprove={next} onReject={reset} />;
-      case 14:
+      case 11:
         return <AutomationScriptCreation />;
-      case 15:
+      case 12:
         return <NotificationToast />;
-      case 16:
-        return (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="text-center py-12"
-          >
-            <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-ordino-success/20 flex items-center justify-center">
-              <svg className="w-10 h-10 text-ordino-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-            </div>
-            <h3 className="text-2xl font-bold text-ordino-success mb-2">
-              Workflow Complete!
-            </h3>
-            <p className="text-ordino-text-muted max-w-md mx-auto">
-              All test designs and automation scripts have been created successfully.
-            </p>
-          </motion.div>
-        );
       default:
         return null;
     }
   };
 
   // Determine which steps should disable the Next button (approval steps or blocked)
-  const isApprovalStep = currentStep === 4 || currentStep === 7 || currentStep === 8 || currentStep === 10 || currentStep === 13;
+  // Steps 3 (Triage Approval), 6 (Review), 10 (Script Approval) are approval steps
+  const isApprovalStep = currentStep === 3 || currentStep === 6 || currentStep === 10;
 
   return (
     <div className="space-y-6">
@@ -128,7 +96,7 @@ export function WorkflowDemoComponent() {
           <div>
             <h2 className="text-lg font-semibold text-ordino-text">Enhanced QA Workflow Demo</h2>
             <p className="text-sm text-ordino-text-muted">
-              Experience Ordino's comprehensive test automation workflow with realistic QA operations
+              Experience Ordino's streamlined 12-step test automation workflow
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -200,7 +168,7 @@ export function WorkflowDemoComponent() {
               <div className="mb-6">
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-xs font-medium text-ordino-primary uppercase tracking-wider">
-                    Step {currentStep} of 16
+                    Step {currentStep} of 12
                   </span>
                   {isComplete && (
                     <span className="text-xs font-medium text-ordino-success uppercase tracking-wider">
@@ -237,8 +205,8 @@ export function WorkflowDemoComponent() {
                     Workflow Complete!
                   </h3>
                   <p className="text-ordino-text-muted mb-4">
-                    Ordino has successfully completed the enhanced QA workflow including requirements triage,
-                    multi-level approvals, test data strategy, and automation script creation.
+                    Ordino has successfully completed the streamlined QA workflow including requirements triage,
+                    test design review, test artifact creation, and automation script generation.
                   </p>
                   <Button onClick={reset}>
                     <RotateCcw size={18} />
@@ -262,11 +230,11 @@ export function WorkflowDemoComponent() {
               <Play size={32} className="text-ordino-primary ml-1" />
             </div>
             <h3 className="text-2xl font-bold text-ordino-text mb-2">
-              Ready for Enhanced QA Workflow?
+              Ready for Streamlined QA Workflow?
             </h3>
             <p className="text-ordino-text-muted max-w-md mx-auto mb-6">
-              Watch how Ordino handles requirements triage, multi-level approvals, test data management,
-              and comprehensive test automation with realistic QA practices.
+              Watch how Ordino handles requirements analysis, test design drafting, combined reviews,
+              artifact creation, and test automation in a streamlined 12-step workflow.
             </p>
             <Button size="lg" onClick={start}>
               <Play size={20} />

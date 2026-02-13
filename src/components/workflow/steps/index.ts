@@ -21,3 +21,8 @@ export { PeerReview } from './PeerReview';
 export { TestDataStrategy } from './TestDataStrategy';
 export { TestDataApproval } from './TestDataApproval';
 export { BlockerDisplay } from './BlockerDisplay';
+
+// New streamlined workflow exports
+export { TestArtifactLookup } from './TestArtifactLookup';
+export { TestDesignReview } from './TestDesignReview';
+export { TestArtifactCreation } from './TestArtifactCreation';

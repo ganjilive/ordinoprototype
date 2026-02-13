@@ -32,7 +32,7 @@ export interface WorkflowState {
   testDataStrategyApproved: boolean;
 }
 
-const TOTAL_STEPS = 16;
+const TOTAL_STEPS = 12;
 const AUTO_PLAY_DELAY = 3000;
 
 export function useWorkflowDemo() {
