@@ -123,13 +123,13 @@ export function TriageApproval({ onApprove, onReject }: TriageApprovalProps) {
                 <motion.div
                   className={`
                     relative z-10 w-16 h-16 rounded-full flex items-center justify-center
-                    border-4 transition-all
+                    border-4 transition-all bg-ordino-card
                     ${
                       entry.status === 'approved'
-                        ? 'bg-ordino-success border-ordino-success'
+                        ? 'border-ordino-success'
                         : index === currentLevel
-                        ? 'bg-ordino-card border-ordino-primary'
-                        : 'bg-ordino-card border-ordino-border'
+                        ? 'border-ordino-primary'
+                        : 'border-ordino-border'
                     }
                   `}
                   animate={

@@ -255,10 +255,11 @@ export function OrdinoThinking() {
               transition={{ delay: 0.3 }}
               className="bg-ordino-bg rounded-xl border border-ordino-border p-4"
             >
-              <div className="flex items-center gap-2 mb-2">
+              <div className="flex items-center gap-2 mb-1">
                 <Clock size={16} className="text-ordino-primary" />
                 <h4 className="font-semibold text-ordino-text text-sm">Testing Effort</h4>
               </div>
+              <p className="text-xs text-ordino-text-muted mb-1">without automation</p>
               <p className="text-xl font-bold text-ordino-text">
                 {triageAnalysis.estimatedTestingEffort}
               </p>
