@@ -21,13 +21,14 @@ npm run preview  # Preview production build locally
 
 The app uses React Router with lazy-loaded pages wrapped in a `MainLayout`:
 - `/` - Dashboard with metrics, charts, activity feed
-- `/demo` - Interactive 12-step QA workflow demonstration
+- `/demo` - Test Scripting Demo: Interactive 12-step QA workflow for test design and automation
+- `/execution` - Test Execution Demo: Placeholder for future test execution workflow
 - `/history` - Historical records and traceability
 - `/settings` - Integration and project configuration
 
-### Workflow Demo (Core Feature)
+### Test Scripting Demo (Core Feature)
 
-The workflow demo (`/demo`) is the main feature, managed by:
+The Test Scripting Demo (`/demo`) is the main feature, managed by:
 - `useWorkflowDemo.ts` hook - State machine controlling the 12-step workflow progression, approval tracking, blockers, and revisions
 - `WorkflowDemo.tsx` - Main component orchestrating step rendering and controls
 - `WorkflowTimeline.tsx` - Visual timeline showing step progress
@@ -55,6 +56,13 @@ Each workflow step in `src/components/workflow/steps/` follows a multi-phase pat
 - Auto-advances through phases using `useEffect` with intervals
 - Renders phases conditionally based on completion state
 - Shows progress indicator at top
+
+### Key Step Components
+
+- **OrdinoThinking.tsx** - Step 2: Displays AI analysis animation and triage assessment results including completeness score, testability level, testing effort (labeled "without automation" to clarify manual effort), identified gaps, and risk flags
+- **TriageApproval.tsx** - Step 3: Multi-level approval chain with animated timeline showing reviewer progress; approved reviewers show green border with checkmark icon
+- **TestDesignDrafting.tsx** - Step 5: Drafts test design scenarios, test cases, and coverage matrix
+- **AutomationScriptDrafting.tsx** - Step 9: Generates automation scripts with feasibility analysis
 
 ### Theming
 
@@ -86,3 +94,9 @@ This prototype demonstrates ISTQB/IEEE 829 compliant QA processes. When modifyin
 - Test design (scenarios, paths, conditions) should be drafted BEFORE test cases
 - Test cases flow from test design, not vice versa
 - Traceability links requirements to test designs to test cases
+
+## UI/UX Guidelines
+
+- Approval animations should show state changes clearly (e.g., green checkmark icon) without overwhelming visual changes (avoid filling entire elements with color)
+- Labels should be clear and unambiguous; add subtitles when clarification is needed (e.g., "Testing Effort" has subtitle "without automation")
+- Use consistent spacing and follow existing component patterns

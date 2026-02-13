@@ -3,6 +3,8 @@ import { motion } from 'framer-motion';
 import {
   LayoutDashboard,
   Play,
+  PlayCircle,
+  Search,
   Settings,
   History,
   MessageSquare,
@@ -17,7 +19,9 @@ interface SidebarProps {
 
 const navItems = [
   { to: '/', icon: LayoutDashboard, label: 'Dashboard' },
-  { to: '/demo', icon: Play, label: 'Workflow Demo' },
+  { to: '/demo', icon: Play, label: 'Test Scripting Demo' },
+  { to: '/execution', icon: PlayCircle, label: 'Test Execution Demo' },
+  { to: '/rca', icon: Search, label: 'RCA Demo' },
   { to: '/history', icon: History, label: 'History' },
   { to: '/settings', icon: Settings, label: 'Settings' },
 ];

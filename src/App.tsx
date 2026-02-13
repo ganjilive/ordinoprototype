@@ -5,6 +5,8 @@ import { MainLayout } from './components/layout';
 // Lazy load pages for better initial load performance
 const Dashboard = lazy(() => import('./pages/Dashboard').then(m => ({ default: m.Dashboard })));
 const WorkflowDemo = lazy(() => import('./pages/WorkflowDemo').then(m => ({ default: m.WorkflowDemo })));
+const TestExecutionDemo = lazy(() => import('./pages/TestExecutionDemo').then(m => ({ default: m.TestExecutionDemo })));
+const RCADemo = lazy(() => import('./pages/RCADemo').then(m => ({ default: m.RCADemo })));
 const History = lazy(() => import('./pages/History').then(m => ({ default: m.History })));
 const Settings = lazy(() => import('./pages/Settings').then(m => ({ default: m.Settings })));
 
@@ -38,6 +40,22 @@ function App() {
             element={
               <Suspense fallback={<PageLoader />}>
                 <WorkflowDemo />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/execution"
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <TestExecutionDemo />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/rca"
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <RCADemo />
               </Suspense>
             }
           />

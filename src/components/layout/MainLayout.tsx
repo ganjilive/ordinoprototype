@@ -8,7 +8,9 @@ import { pageVariants } from '../../utils/animations';
 
 const pageTitles: Record<string, string> = {
   '/': 'Dashboard',
-  '/demo': 'Workflow Demo',
+  '/demo': 'Test Scripting Demo',
+  '/execution': 'Test Execution Demo',
+  '/rca': 'RCA Demo',
   '/history': 'History',
   '/settings': 'Settings',
 };
