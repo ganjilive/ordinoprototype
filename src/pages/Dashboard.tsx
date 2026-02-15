@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { MetricCard, TrendChart, QualityGauge, ActivityFeed, ConnectedTools } from '../components/dashboard';
+import { MetricCard, TrendChart, QualityGauge, ActivityFeed, ConnectedTools, RoiMetricsCard, EfficiencyChart } from '../components/dashboard';
 import { metrics, trendData, activities, connectedTools } from '../data/mockData';
 import { staggerContainerVariants, slideUpVariants } from '../utils/animations';
 
@@ -16,6 +16,11 @@ export function Dashboard() {
       animate="animate"
       className="space-y-6"
     >
+      {/* ROI Metrics Header */}
+      <motion.div variants={slideUpVariants}>
+        <RoiMetricsCard />
+      </motion.div>
+
       {/* Metrics Grid */}
       <motion.div variants={slideUpVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {metrics.map((metric, index) => (
@@ -27,6 +32,11 @@ export function Dashboard() {
       <motion.div variants={slideUpVariants} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <TrendChart data={trendData} />
         <QualityGauge score={qualityScore} />
+      </motion.div>
+
+      {/* Efficiency Chart Row */}
+      <motion.div variants={slideUpVariants} className="grid grid-cols-1 lg:grid-cols-1 gap-6">
+        <EfficiencyChart />
       </motion.div>
 
       {/* Activity & Tools Row */}

@@ -137,6 +137,22 @@ export const trendData: TrendDataPoint[] = [
   { date: 'Mar 5', coverage: 87.3, passRate: 98.7, automation: 76.2 },
 ];
 
+// ROI / Efficiency Metrics
+export const roiMetrics = {
+  hoursSaved: 1240,
+  costSaved: 186000,
+  efficiencyGain: 85,
+  testCreationSpeedup: '12x',
+};
+
+// Efficiency Comparison Data (Manual vs Ordino)
+export const efficiencyComparison = [
+  { task: 'Test Case Creation', manual: 120, ordino: 10, unit: 'min' },
+  { task: 'Test Maintenance', manual: 60, ordino: 5, unit: 'min' },
+  { task: 'Defect Reporting', manual: 30, ordino: 2, unit: 'min' },
+  { task: 'RCA & Triage', manual: 240, ordino: 15, unit: 'min' },
+];
+
 // History Entries
 export const historyEntries: HistoryEntry[] = [
   {

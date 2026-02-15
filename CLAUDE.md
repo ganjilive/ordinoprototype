@@ -23,6 +23,7 @@ The app uses React Router with lazy-loaded pages wrapped in a `MainLayout`:
 - `/` - Dashboard with metrics, charts, activity feed
 - `/demo` - Test Scripting Demo: Interactive 12-step QA workflow for test design and automation
 - `/execution` - Test Execution Demo: Placeholder for future test execution workflow
+- `/rca` - RCA Demo: Root cause analysis workflow
 - `/history` - Historical records and traceability
 - `/settings` - Integration and project configuration
 
@@ -78,6 +79,8 @@ Custom Tailwind theme defined in `src/index.css` using CSS variables:
 - **lucide-react** - Icon library
 - **recharts** - Dashboard charts
 - **react-router-dom** - Routing with lazy loading
+- **clsx** + **tailwind-merge** - Conditional class composition
+- **date-fns** - Date formatting and manipulation
 
 ### Data Layer
 

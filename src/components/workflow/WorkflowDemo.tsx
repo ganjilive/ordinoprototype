@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, SkipForward, RotateCcw, Pause, PlayCircle, AlertCircle } from 'lucide-react';
+import { Play, SkipForward, RotateCcw, Pause, PlayCircle, AlertCircle, Clock, Zap, DollarSign } from 'lucide-react';
 import { Button, Card } from '../common';
 import { WorkflowTimeline } from './WorkflowTimeline';
 import { useWorkflowDemo } from '../../hooks/useWorkflowDemo';
@@ -34,6 +34,23 @@ const stepDescriptions = [
   'Review the drafted automation scripts. Approve to create them in the repository.',
   'Creating approved automation scripts in the configured test script repository.',
   'Notifying stakeholders with a summary of what was accomplished.',
+];
+
+// Metrics for each step (Manual in minutes, Ordino in seconds)
+const stepTimeMetrics = [
+  { manual: 0, ordino: 0 }, // Step 0 (Start)
+  { manual: 5, ordino: 0.1 }, // Step 1: Detect
+  { manual: 45, ordino: 5 }, // Step 2: Analyze
+  { manual: 30, ordino: 1 }, // Step 3: Triage Approval
+  { manual: 60, ordino: 2 }, // Step 4: Lookup
+  { manual: 120, ordino: 15 }, // Step 5: Draft Design
+  { manual: 45, ordino: 5 }, // Step 6: Design Review
+  { manual: 30, ordino: 2 }, // Step 7: Create Artifacts
+  { manual: 45, ordino: 3 }, // Step 8: Data Strategy
+  { manual: 180, ordino: 20 }, // Step 9: Draft Scripts
+  { manual: 60, ordino: 5 }, // Step 10: Script Approval
+  { manual: 30, ordino: 3 }, // Step 11: Create Scripts
+  { manual: 10, ordino: 1 }, // Step 12: Notification
 ];
 
 export function WorkflowDemoComponent() {
@@ -88,6 +105,18 @@ export function WorkflowDemoComponent() {
   // Steps 3 (Triage Approval), 6 (Review), 10 (Script Approval) are approval steps
   const isApprovalStep = currentStep === 3 || currentStep === 6 || currentStep === 10;
 
+  // Calculate cumulative time
+  const cumulativeManualMinutes = stepTimeMetrics
+    .slice(0, currentStep + 1)
+    .reduce((acc, curr) => acc + curr.manual, 0);
+
+  const cumulativeOrdinoSeconds = stepTimeMetrics
+    .slice(0, currentStep + 1)
+    .reduce((acc, curr) => acc + curr.ordino, 0);
+
+  const hoursSaved = (cumulativeManualMinutes / 60).toFixed(1);
+  const costSaved = (cumulativeManualMinutes / 60 * 150).toFixed(0); // Assuming $150/hr
+
   return (
     <div className="space-y-6">
       {/* Controls */}
@@ -139,6 +168,51 @@ export function WorkflowDemoComponent() {
           </div>
         </div>
       </Card>
+
+      {/* Time/Cost Tracker */}
+      {currentStep > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="grid grid-cols-1 md:grid-cols-3 gap-4"
+        >
+          <Card className="bg-ordino-bg/50 border-ordino-border/50">
+            <div className="flex items-center gap-3 p-2">
+              <div className="p-2 rounded-full bg-ordino-text-muted/10">
+                <Clock className="w-5 h-5 text-ordino-text-muted" />
+              </div>
+              <div>
+                <p className="text-xs text-ordino-text-muted uppercase">Manual Time Est.</p>
+                <p className="text-xl font-mono text-ordino-text-muted">{cumulativeManualMinutes} min</p>
+              </div>
+            </div>
+          </Card>
+
+          <Card className="bg-ordino-primary/10 border-ordino-primary/30">
+            <div className="flex items-center gap-3 p-2">
+              <div className="p-2 rounded-full bg-ordino-primary/20">
+                <Zap className="w-5 h-5 text-ordino-primary" />
+              </div>
+              <div>
+                <p className="text-xs text-ordino-primary uppercase">Ordino Time</p>
+                <p className="text-xl font-mono text-ordino-primary font-bold">{cumulativeOrdinoSeconds.toFixed(1)} sec</p>
+              </div>
+            </div>
+          </Card>
+
+          <Card className="bg-ordino-success/10 border-ordino-success/30">
+            <div className="flex items-center gap-3 p-2">
+              <div className="p-2 rounded-full bg-ordino-success/20">
+                <DollarSign className="w-5 h-5 text-ordino-success" />
+              </div>
+              <div>
+                <p className="text-xs text-ordino-success uppercase">Est. Cost Savings</p>
+                <p className="text-xl font-mono text-ordino-success font-bold">${costSaved}</p>
+              </div>
+            </div>
+          </Card>
+        </motion.div>
+      )}
 
       {/* Main content */}
       {currentStep > 0 && (
@@ -197,21 +271,43 @@ export function WorkflowDemoComponent() {
               {/* Completion message */}
               {isComplete && (
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="mt-8 text-center p-6 bg-ordino-success/10 rounded-xl border border-ordino-success/20"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="mt-8 p-6 bg-gradient-to-br from-ordino-success/10 to-ordino-primary/5 rounded-xl border border-ordino-success/20 shadow-lg"
                 >
-                  <h3 className="text-xl font-bold text-ordino-success mb-2">
-                    Workflow Complete!
-                  </h3>
-                  <p className="text-ordino-text-muted mb-4">
-                    Ordino has successfully completed the streamlined QA workflow including requirements triage,
-                    test design review, test artifact creation, and automation script generation.
-                  </p>
-                  <Button onClick={reset}>
-                    <RotateCcw size={18} />
-                    Run Demo Again
-                  </Button>
+                  <div className="text-center mb-6">
+                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-ordino-success/20 text-ordino-success mb-4">
+                      <Zap size={32} />
+                    </div>
+                    <h3 className="text-2xl font-bold text-ordino-text mb-2">
+                      Workflow Complete!
+                    </h3>
+                    <p className="text-ordino-text-muted">
+                      You just completed a comprehensive test automation workflow.
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div className="text-center p-3 bg-ordino-bg/50 rounded-lg">
+                      <p className="text-sm text-ordino-text-muted">Total Time Saved</p>
+                      <p className="text-2xl font-bold text-ordino-success">{hoursSaved} Hours</p>
+                    </div>
+                    <div className="text-center p-3 bg-ordino-bg/50 rounded-lg">
+                      <p className="text-sm text-ordino-text-muted">Speed Improvement</p>
+                      <p className="text-2xl font-bold text-ordino-primary">{(cumulativeManualMinutes * 60 / cumulativeOrdinoSeconds).toFixed(0)}x Faster</p>
+                    </div>
+                    <div className="text-center p-3 bg-ordino-bg/50 rounded-lg">
+                      <p className="text-sm text-ordino-text-muted">Cost Efficiency</p>
+                      <p className="text-2xl font-bold text-ordino-success">${costSaved} Saved</p>
+                    </div>
+                  </div>
+
+                  <div className="flex justify-center">
+                    <Button onClick={reset} size="lg">
+                      <RotateCcw size={18} />
+                      Run Demo Again
+                    </Button>
+                  </div>
                 </motion.div>
               )}
             </Card>
