@@ -212,3 +212,36 @@ export interface CommunicationLogEntry {
   channel: 'slack' | 'email';
   message: string;
 }
+
+// Test Execution Demo Types
+export interface TestExecution {
+  id: string;
+  name: string;
+  description: string;
+  status: 'pending' | 'running' | 'passed' | 'failed' | 'skipped';
+  duration?: number;
+  errorMessage?: string;
+}
+
+export interface BugReport {
+  id: string;
+  jiraKey: string;
+  title: string;
+  severity: 'Critical' | 'High' | 'Medium' | 'Low';
+  linkedTestId: string;
+  status: 'created' | 'open' | 'in-progress';
+}
+
+export interface PipelineStage {
+  id: string;
+  name: string;
+  status: 'pending' | 'running' | 'success' | 'failed';
+  duration?: number;
+}
+
+export interface ExecutionChatMessage {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+  timestamp: Date;
+}

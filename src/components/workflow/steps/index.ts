@@ -26,3 +26,15 @@ export { BlockerDisplay } from './BlockerDisplay';
 export { TestArtifactLookup } from './TestArtifactLookup';
 export { TestDesignReview } from './TestDesignReview';
 export { TestArtifactCreation } from './TestArtifactCreation';
+
+// Test Execution Demo exports
+export {
+  CloneRepository,
+  ExecuteTestsLocally,
+  ReportBugs,
+  CommitScripts,
+  PipelineExecution,
+  GenerateResults,
+  UpdateDashboards,
+  OrdinoChatUI,
+} from './execution';
