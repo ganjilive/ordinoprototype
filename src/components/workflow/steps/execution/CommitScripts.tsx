@@ -44,9 +44,9 @@ export function CommitScripts({ onApprove, onReject }: CommitScriptsProps) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-xl font-bold text-ordino-text mb-1">Commit Test Results</h3>
+          <h3 className="text-xl font-bold text-ordino-text mb-1">Commit & Push</h3>
           <p className="text-sm text-ordino-text-muted">
-            Review and approve changes before committing to repository
+            Commit test changes and push to trigger the pipeline
           </p>
         </div>
         <Badge variant="warning">Approval Required</Badge>
@@ -103,18 +103,21 @@ export function CommitScripts({ onApprove, onReject }: CommitScriptsProps) {
       <div className="bg-ordino-bg rounded-xl border border-ordino-border p-4">
         <h4 className="font-semibold text-ordino-text mb-4">Diff Preview</h4>
         <div className="bg-gray-900 rounded-lg p-4 font-mono text-xs overflow-x-auto">
-          <div className="text-gray-500 mb-2">--- a/test-results/ORD-1234-results.xml</div>
-          <div className="text-gray-500 mb-2">+++ b/test-results/ORD-1234-results.xml</div>
-          <div className="text-gray-500">@@ -0,0 +1,45 @@</div>
-          <div className="text-ordino-success">+ &lt;?xml version="1.0" encoding="UTF-8"?&gt;</div>
-          <div className="text-ordino-success">+ &lt;testsuite name="2FA Feature Tests"&gt;</div>
-          <div className="text-ordino-success">+   &lt;testcase name="TwoFactorSetupTest" status="passed"/&gt;</div>
-          <div className="text-ordino-success">+   &lt;testcase name="TwoFactorValidationTest" status="passed"/&gt;</div>
-          <div className="text-ordino-success">+   &lt;testcase name="InvalidCodeTest" status="failed"&gt;</div>
-          <div className="text-ordino-success">+     &lt;failure&gt;AssertionError&lt;/failure&gt;</div>
-          <div className="text-ordino-success">+   &lt;/testcase&gt;</div>
-          <div className="text-ordino-success">+   &lt;!-- ... more test results ... --&gt;</div>
-          <div className="text-ordino-success">+ &lt;/testsuite&gt;</div>
+          <div className="text-gray-500 mb-2">--- a/tests/selenium/TwoFactorSetupTest.java</div>
+          <div className="text-gray-500 mb-2">+++ b/tests/selenium/TwoFactorSetupTest.java</div>
+          <div className="text-gray-500">@@ -0,0 +1,24 @@</div>
+          <div className="text-ordino-success">+ package tests.selenium;</div>
+          <div className="text-ordino-success">+</div>
+          <div className="text-ordino-success">+ import org.junit.jupiter.api.Test;</div>
+          <div className="text-ordino-success">+ import static org.junit.jupiter.api.Assertions.*;</div>
+          <div className="text-ordino-success">+</div>
+          <div className="text-ordino-success">+ public class TwoFactorSetupTest {'{'}</div>
+          <div className="text-ordino-success">+   @Test</div>
+          <div className="text-ordino-success">+   public void shouldEnable2FAForNewUser() {'{'}</div>
+          <div className="text-ordino-success">+     // Navigate to 2FA setup</div>
+          <div className="text-ordino-success">+     assertTrue(page.is2FAEnabled());</div>
+          <div className="text-ordino-success">+   {'}'}</div>
+          <div className="text-ordino-success">+ {'}'}</div>
         </div>
       </div>
 
@@ -125,10 +128,8 @@ export function CommitScripts({ onApprove, onReject }: CommitScriptsProps) {
           <p className="text-sm text-ordino-text font-mono whitespace-pre-wrap">
 {`${commitDetails.message}
 
-- Added test execution results for 15 test cases
-- 12 passed, 3 failed, 1 skipped
-- Created 3 bug tickets: ORD-1501, ORD-1502, ORD-1503
-- Updated coverage report
+- Add test automation for 2FA validation flows
+- Pushing triggers CI pipeline
 
 Co-Authored-By: Ordino AI <ai@ordino.io>`}
           </p>
@@ -143,7 +144,7 @@ Co-Authored-By: Ordino AI <ai@ordino.io>`}
         className="flex items-center justify-end gap-3 pt-4 border-t border-ordino-border"
       >
         <p className="text-xs text-ordino-text-muted mr-auto">
-          Approve to commit changes to the repository
+          Approve to push changes and trigger the pipeline
         </p>
         <Button variant="ghost" onClick={onReject} size="sm">
           <XCircle size={16} />
@@ -151,7 +152,7 @@ Co-Authored-By: Ordino AI <ai@ordino.io>`}
         </Button>
         <Button onClick={onApprove} size="sm">
           <CheckCircle size={16} />
-          Approve & Commit
+          Approve & Push
         </Button>
       </motion.div>
     </motion.div>

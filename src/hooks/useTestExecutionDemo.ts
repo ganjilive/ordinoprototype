@@ -13,7 +13,7 @@ export interface ExecutionWorkflowState {
   isPlaying: boolean;
   isComplete: boolean;
 
-  // Commit approval for step 4
+  // Commit approval for step 3
   commitApprovalStatus: 'pending' | 'approved' | 'rejected';
 
   // Test execution tracking
@@ -30,11 +30,11 @@ export interface ExecutionWorkflowState {
   pipelineStatus: 'pending' | 'running' | 'success' | 'failed';
   pipelineStages: PipelineStage[];
 
-  // Chat messages for step 8
+  // Chat messages for step 7
   chatMessages: ExecutionChatMessage[];
 }
 
-const TOTAL_STEPS = 8;
+const TOTAL_STEPS = 7;
 const AUTO_PLAY_DELAY = 3000;
 
 export function useTestExecutionDemo() {
@@ -250,8 +250,8 @@ export function useTestExecutionDemo() {
 
   // Auto-play effect
   useEffect(() => {
-    // Don't auto-advance on approval step (step 4) or interactive step (step 8)
-    const isBlockingStep = state.currentStep === 4 || state.currentStep === 8;
+    // Don't auto-advance on approval step (step 3) or interactive step (step 7)
+    const isBlockingStep = state.currentStep === 3 || state.currentStep === 7;
 
     if (state.isPlaying && !state.isComplete && !isBlockingStep) {
       autoPlayRef.current = setInterval(() => {

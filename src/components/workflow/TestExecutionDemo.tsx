@@ -4,7 +4,6 @@ import { Button, Card } from '../common';
 import { ExecutionTimeline } from './ExecutionTimeline';
 import { useTestExecutionDemo } from '../../hooks/useTestExecutionDemo';
 import {
-  CloneRepository,
   ExecuteTestsLocally,
   ReportBugs,
   CommitScripts,
@@ -17,14 +16,13 @@ import { executionTimeMetrics } from '../../data/testExecutionMockData';
 
 const stepDescriptions = [
   '',
-  'Cloning the test automation repository to local environment.',
-  'Running automated tests locally to validate test scripts.',
-  'Creating JIRA tickets for bugs discovered during test execution.',
-  'Reviewing and approving changes before committing to repository.',
-  'Executing tests via CI/CD pipeline with build and deployment stages.',
-  'Generating comprehensive test execution reports and artifacts.',
-  'Updating dashboards and syncing results across integrations.',
-  'Interactive chat to query test results and get recommendations.',
+  'Running automated tests locally to validate before pushing.',
+  'Creating defect tickets in Jira for failures discovered.',
+  'Commit test changes and push to trigger the pipeline.',
+  'CI/CD runs full build and test suite.',
+  'Reports generated from the pipeline run.',
+  'Results synced to Jira, TestRail, and Slack.',
+  'Query results and get recommendations.',
 ];
 
 export function TestExecutionDemoComponent() {
@@ -42,28 +40,26 @@ export function TestExecutionDemoComponent() {
   const renderStepContent = () => {
     switch (currentStep) {
       case 1:
-        return <CloneRepository />;
-      case 2:
         return <ExecuteTestsLocally />;
-      case 3:
+      case 2:
         return <ReportBugs />;
-      case 4:
+      case 3:
         return <CommitScripts onApprove={next} onReject={reset} />;
-      case 5:
+      case 4:
         return <PipelineExecution />;
-      case 6:
+      case 5:
         return <GenerateResults />;
-      case 7:
+      case 6:
         return <UpdateDashboards />;
-      case 8:
+      case 7:
         return <OrdinoChatUI />;
       default:
         return null;
     }
   };
 
-  // Step 4 is approval step, step 8 is interactive
-  const isBlockingStep = currentStep === 4 || currentStep === 8;
+  // Step 3 is approval step, step 7 is interactive
+  const isBlockingStep = currentStep === 3 || currentStep === 7;
 
   // Calculate cumulative time
   const cumulativeManualMinutes = executionTimeMetrics
@@ -85,7 +81,7 @@ export function TestExecutionDemoComponent() {
           <div>
             <h2 className="text-lg font-semibold text-ordino-text">Test Execution Demo</h2>
             <p className="text-sm text-ordino-text-muted">
-              Experience Ordino's 8-step test execution workflow
+              Experience Ordino's 7-step test execution workflow
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -176,7 +172,7 @@ export function TestExecutionDemoComponent() {
               <div className="mb-6">
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-xs font-medium text-ordino-primary uppercase tracking-wider">
-                    Step {currentStep} of 8
+                    Step {currentStep} of 7
                   </span>
                   {isComplete && (
                     <span className="text-xs font-medium text-ordino-success uppercase tracking-wider">
@@ -267,7 +263,7 @@ export function TestExecutionDemoComponent() {
               Ready for Automated Test Execution?
             </h3>
             <p className="text-ordino-text-muted max-w-md mx-auto mb-6">
-              Watch how Ordino handles test execution from repository cloning through pipeline
+              Watch how Ordino handles test execution from local validation through pipeline
               deployment, bug reporting, and interactive result analysis.
             </p>
             <Button size="lg" onClick={start}>

@@ -29,7 +29,6 @@ export { TestArtifactCreation } from './TestArtifactCreation';
 
 // Test Execution Demo exports
 export {
-  CloneRepository,
   ExecuteTestsLocally,
   ReportBugs,
   CommitScripts,

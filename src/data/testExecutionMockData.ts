@@ -177,18 +177,18 @@ export const pipelineStages: PipelineStage[] = [
 // Commit Details
 export const commitDetails = {
   hash: 'a7f3c2d',
-  message: 'Add test execution results for ORD-1234 2FA feature',
+  message: 'Add 2FA test scripts for ORD-1234',
   author: 'Ordino AI',
-  branch: 'feature/2fa-test-results',
+  branch: 'feature/2fa-test-scripts',
   filesChanged: 5,
-  additions: 312,
-  deletions: 47,
+  additions: 248,
+  deletions: 12,
   changedFiles: [
-    { name: 'test-results/ORD-1234-results.xml', status: 'added' },
-    { name: 'test-results/ORD-1234-report.html', status: 'added' },
-    { name: 'coverage/lcov.info', status: 'modified' },
-    { name: 'README.md', status: 'modified' },
+    { name: 'tests/selenium/TwoFactorSetupTest.java', status: 'added' },
+    { name: 'tests/selenium/InvalidCodeTest.java', status: 'added' },
+    { name: 'tests/api/TwoFactorTimeoutTest.java', status: 'added' },
     { name: 'config/test-config.json', status: 'modified' },
+    { name: 'pom.xml', status: 'modified' },
   ],
 };
 
@@ -311,10 +311,9 @@ export const suggestedQuestions = [
 // Time/Cost Metrics for Test Execution Demo
 export const executionTimeMetrics = [
   { manual: 0, ordino: 0 },      // Step 0 (Start)
-  { manual: 15, ordino: 2 },     // Clone Repository
-  { manual: 60, ordino: 5 },     // Execute Tests
+  { manual: 60, ordino: 5 },     // Execute Tests Locally
   { manual: 30, ordino: 3 },     // Report Bugs
-  { manual: 20, ordino: 1 },     // Commit Scripts (Approval)
+  { manual: 20, ordino: 1 },     // Commit & Push
   { manual: 45, ordino: 8 },     // Pipeline Execution
   { manual: 15, ordino: 2 },     // Generate Results
   { manual: 20, ordino: 3 },     // Update Dashboards

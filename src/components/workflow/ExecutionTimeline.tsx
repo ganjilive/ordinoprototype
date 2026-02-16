@@ -9,10 +9,9 @@ interface ExecutionTimelineProps {
 }
 
 const stepTitles = [
-  'Clone Repository',
   'Execute Tests Locally',
   'Report Bugs',
-  'Commit Scripts',
+  'Commit & Push',
   'Pipeline Execution',
   'Generate Results',
   'Update Dashboards',

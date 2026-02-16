@@ -1,4 +1,3 @@
-export { CloneRepository } from './CloneRepository';
 export { ExecuteTestsLocally } from './ExecuteTestsLocally';
 export { ReportBugs } from './ReportBugs';
 export { CommitScripts } from './CommitScripts';
