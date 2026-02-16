@@ -4,17 +4,6 @@ import { Badge } from '../../../common';
 import { bugDetails } from '../../../../data/testFailureMockData';
 
 export function BugDetection() {
-  const getSeverityColor = (severity: string) => {
-    switch (severity) {
-      case 'Critical':
-        return 'text-ordino-error bg-ordino-error/20 border-ordino-error/30';
-      case 'High':
-        return 'text-ordino-warning bg-ordino-warning/20 border-ordino-warning/30';
-      default:
-        return 'text-ordino-text-muted bg-ordino-card border-ordino-border';
-    }
-  };
-
   return (
     <motion.div
       initial={{ opacity: 0 }}

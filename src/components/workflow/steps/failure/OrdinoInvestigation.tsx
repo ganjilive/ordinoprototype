@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Search, CheckCircle, Loader2, AlertCircle, Code, Database, Server } from 'lucide-react';
 import { failedTestCases, bugDetails } from '../../../../data/testFailureMockData';
 
