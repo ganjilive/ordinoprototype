@@ -8,6 +8,7 @@ import {
   Settings,
   History,
   MessageSquare,
+  AlertTriangle,
 } from 'lucide-react';
 import { Logo } from '../common';
 import { cn } from '../../utils/helpers';
@@ -21,6 +22,7 @@ const navItems = [
   { to: '/', icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/demo', icon: Play, label: 'Test Scripting Demo' },
   { to: '/execution', icon: PlayCircle, label: 'Test Execution Demo' },
+  { to: '/failure', icon: AlertTriangle, label: 'Test Failure Demo' },
   { to: '/rca', icon: Search, label: 'RCA Demo' },
   { to: '/history', icon: History, label: 'History' },
   { to: '/settings', icon: Settings, label: 'Settings' },

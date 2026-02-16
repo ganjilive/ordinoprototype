@@ -6,6 +6,7 @@ import { MainLayout } from './components/layout';
 const Dashboard = lazy(() => import('./pages/Dashboard').then(m => ({ default: m.Dashboard })));
 const WorkflowDemo = lazy(() => import('./pages/WorkflowDemo').then(m => ({ default: m.WorkflowDemo })));
 const TestExecutionDemo = lazy(() => import('./pages/TestExecutionDemo').then(m => ({ default: m.TestExecutionDemo })));
+const TestFailureDemo = lazy(() => import('./pages/TestFailureDemo').then(m => ({ default: m.TestFailureDemo })));
 const RCADemo = lazy(() => import('./pages/RCADemo').then(m => ({ default: m.RCADemo })));
 const History = lazy(() => import('./pages/History').then(m => ({ default: m.History })));
 const Settings = lazy(() => import('./pages/Settings').then(m => ({ default: m.Settings })));
@@ -48,6 +49,14 @@ function App() {
             element={
               <Suspense fallback={<PageLoader />}>
                 <TestExecutionDemo />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/failure"
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <TestFailureDemo />
               </Suspense>
             }
           />
