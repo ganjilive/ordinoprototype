@@ -245,3 +245,88 @@ export interface ExecutionChatMessage {
   content: string;
   timestamp: Date;
 }
+
+// RCA Demo Types
+export interface FailingBuild {
+  buildNumber: number;
+  commitHash: string;
+  failedTest: string;
+  errorMessage: string;
+  timestamp: string;
+}
+
+export interface RCAAnalysisStep {
+  id: string;
+  label: string;
+  finding: string;
+  type: 'error' | 'warning' | 'info';
+}
+
+export interface SlackMessage {
+  id: string;
+  channel: string;
+  recipient: string;
+  message: string;
+}
+
+export interface HumanResponse {
+  id: string;
+  from: string;
+  role: string;
+  message: string;
+  timestamp: string;
+}
+
+export interface TimelineEvent {
+  date: string;
+  event: string;
+}
+
+export interface RootCauseEntry {
+  title: string;
+  detail: string;
+}
+
+export interface ImpactEntry {
+  label: string;
+  value: string;
+}
+
+export interface ResolutionStep {
+  id: number;
+  action: string;
+  owner: string;
+  priority: 'High' | 'Medium' | 'Low';
+}
+
+export interface FiveWhysEntry {
+  why: string;
+  answer: string;
+}
+
+export interface RCAReport {
+  id: string;
+  title: string;
+  severity: 'Critical' | 'High' | 'Medium' | 'Low';
+  problemStatement: string;
+  timeline: TimelineEvent[];
+  rootCause: RootCauseEntry;
+  contributingFactors: string[];
+  resolutionSteps: ResolutionStep[];
+  preventionRecommendations: string[];
+  fiveWhys: FiveWhysEntry[];
+}
+
+export interface RCAStakeholderNotification {
+  id: number;
+  channel: string;
+  icon: string;
+  recipient: string;
+  message: string;
+  color: string;
+}
+
+export interface RCATimeMetric {
+  manual: number;
+  ordino: number;
+}

@@ -37,3 +37,14 @@ export {
   UpdateDashboards,
   OrdinoChatUI,
 } from './execution';
+
+// RCA Demo exports
+export {
+  BuildPipelineTrigger,
+  FailurePatternDetection,
+  AutomatedRCAAnalysis,
+  RootCauseIdentified,
+  HumanCollaborationRequest,
+  HumanInputCompletion,
+  RCAReportNotification,
+} from './rca';
