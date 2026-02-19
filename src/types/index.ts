@@ -330,3 +330,22 @@ export interface RCATimeMetric {
   manual: number;
   ordino: number;
 }
+
+// Auto-Heal Demo Types
+export type AutoHealStepStatus = 'pending' | 'active' | 'completed';
+
+export interface AutoHealWorkflowState {
+  currentStep: number;
+  steps: {
+    id: number;
+    status: AutoHealStepStatus;
+  }[];
+  isPlaying: boolean;
+  isComplete: boolean;
+  healingApproved: boolean;
+}
+
+export interface AutoHealTimeMetric {
+  manual: number;
+  ordino: number;
+}

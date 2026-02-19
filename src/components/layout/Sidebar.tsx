@@ -9,6 +9,7 @@ import {
   History,
   MessageSquare,
   AlertTriangle,
+  Wrench,
 } from 'lucide-react';
 import { Logo } from '../common';
 import { cn } from '../../utils/helpers';
@@ -24,6 +25,7 @@ const navItems = [
   { to: '/execution', icon: PlayCircle, label: 'Test Execution Demo' },
   { to: '/failure', icon: AlertTriangle, label: 'Test Failure Demo' },
   { to: '/rca', icon: Search, label: 'RCA Demo' },
+  { to: '/heal', icon: Wrench, label: 'Auto-Heal Demo' },
   { to: '/history', icon: History, label: 'History' },
   { to: '/settings', icon: Settings, label: 'Settings' },
 ];

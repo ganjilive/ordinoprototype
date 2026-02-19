@@ -8,6 +8,7 @@ const WorkflowDemo = lazy(() => import('./pages/WorkflowDemo').then(m => ({ defa
 const TestExecutionDemo = lazy(() => import('./pages/TestExecutionDemo').then(m => ({ default: m.TestExecutionDemo })));
 const TestFailureDemo = lazy(() => import('./pages/TestFailureDemo').then(m => ({ default: m.TestFailureDemo })));
 const RCADemo = lazy(() => import('./pages/RCADemo').then(m => ({ default: m.RCADemo })));
+const AutoHealDemo = lazy(() => import('./pages/AutoHealDemo').then(m => ({ default: m.AutoHealDemo })));
 const History = lazy(() => import('./pages/History').then(m => ({ default: m.History })));
 const Settings = lazy(() => import('./pages/Settings').then(m => ({ default: m.Settings })));
 
@@ -65,6 +66,14 @@ function App() {
             element={
               <Suspense fallback={<PageLoader />}>
                 <RCADemo />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/heal"
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <AutoHealDemo />
               </Suspense>
             }
           />

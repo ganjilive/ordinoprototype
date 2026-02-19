@@ -48,3 +48,14 @@ export {
   HumanInputCompletion,
   RCAReportNotification,
 } from './rca';
+
+// Auto-Heal Demo exports
+export {
+  FailureDetected,
+  FailureClassification,
+  ChangeCorrelation,
+  HealingStrategySelected,
+  SandboxValidation,
+  QAReviewGate,
+  HealedAndCommitted,
+} from './autoheal';
