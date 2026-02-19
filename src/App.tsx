@@ -11,6 +11,10 @@ const RCADemo = lazy(() => import('./pages/RCADemo').then(m => ({ default: m.RCA
 const AutoHealDemo = lazy(() => import('./pages/AutoHealDemo').then(m => ({ default: m.AutoHealDemo })));
 const History = lazy(() => import('./pages/History').then(m => ({ default: m.History })));
 const Settings = lazy(() => import('./pages/Settings').then(m => ({ default: m.Settings })));
+const SlackDemo = lazy(() => import('./pages/SlackDemo').then(m => ({ default: m.SlackDemo })));
+const TeamsDemo = lazy(() => import('./pages/TeamsDemo').then(m => ({ default: m.TeamsDemo })));
+const JiraDemo = lazy(() => import('./pages/JiraDemo').then(m => ({ default: m.JiraDemo })));
+const VSCodeDemo = lazy(() => import('./pages/VSCodeDemo').then(m => ({ default: m.VSCodeDemo })));
 
 // Loading fallback
 function PageLoader() {
@@ -90,6 +94,38 @@ function App() {
             element={
               <Suspense fallback={<PageLoader />}>
                 <Settings />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/slack"
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <SlackDemo />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/teams"
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <TeamsDemo />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/jira"
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <JiraDemo />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/vscode"
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <VSCodeDemo />
               </Suspense>
             }
           />

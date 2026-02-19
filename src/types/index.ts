@@ -349,3 +349,128 @@ export interface AutoHealTimeMetric {
   manual: number;
   ordino: number;
 }
+
+// Platform Integration Demo Types
+
+export interface PlatformChatMessage {
+  id: string;
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+  timestamp: Date;
+  authorName?: string;
+  authorType?: 'human' | 'bot' | 'system';
+}
+
+// Slack types
+export interface SlackFailingTest {
+  id: string;
+  name: string;
+  error: string;
+}
+
+export interface SlackCIAlertData {
+  buildNumber: number;
+  commitHash: string;
+  commitAuthor: string;
+  branch: string;
+  failingTests: SlackFailingTest[];
+  coverageBefore: number;
+  coverageAfter: number;
+  jiraTicket: string;
+}
+
+export interface SlackChannelMessage {
+  id: string;
+  authorName: string;
+  authorType: 'human' | 'bot' | 'system';
+  content: string;
+  timestamp: string;
+  isAlert?: boolean;
+}
+
+// Teams types
+export interface TeamsFailureEntry {
+  name: string;
+  severity: 'Critical' | 'High' | 'Medium' | 'Low';
+  isBlocking: boolean;
+}
+
+export interface TeamsReportData {
+  sprintName: string;
+  passed: number;
+  failed: number;
+  skipped: number;
+  duration: string;
+  coverage: number;
+  passRate: number;
+  topFailures: TeamsFailureEntry[];
+}
+
+export interface TeamsChannelMessage {
+  id: string;
+  authorName: string;
+  authorType: 'human' | 'bot' | 'system';
+  content: string;
+  timestamp: string;
+  isReport?: boolean;
+}
+
+// Jira types
+export interface JiraChildIssue {
+  key: string;
+  summary: string;
+  status: string;
+  type: 'Test' | 'Sub-task' | 'Bug';
+}
+
+export interface JiraComment {
+  id: string;
+  authorName: string;
+  authorType: 'human' | 'bot';
+  content: string;
+  timestamp: string;
+}
+
+export interface JiraIssue {
+  key: string;
+  summary: string;
+  type: 'Bug' | 'Story' | 'Task' | 'Epic';
+  status: string;
+  priority: 'Critical' | 'High' | 'Medium' | 'Low';
+  reporter: string;
+  assignee: string;
+  labels: string[];
+  sprint: string;
+  storyPoints: number;
+  description: string;
+  comments: JiraComment[];
+  childIssues: JiraChildIssue[];
+}
+
+// VS Code types
+export type CoverageStatus = 'covered' | 'uncovered' | 'partial' | 'none';
+
+export interface VSCodeToken {
+  text: string;
+  color: string;
+}
+
+export interface VSCodeLine {
+  lineNumber: number;
+  tokens: VSCodeToken[];
+  coverageStatus: CoverageStatus;
+}
+
+export interface UncoveredFunction {
+  name: string;
+  startLine: number;
+  endLine: number;
+  reason: string;
+}
+
+export interface VSCodeCoverage {
+  overall: number;
+  functions: number;
+  branches: number;
+  uncoveredFunctions: UncoveredFunction[];
+}

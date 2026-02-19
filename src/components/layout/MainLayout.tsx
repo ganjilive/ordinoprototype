@@ -12,8 +12,13 @@ const pageTitles: Record<string, string> = {
   '/execution': 'Test Execution Demo',
   '/failure': 'Test Failure Demo',
   '/rca': 'RCA Demo',
+  '/heal': 'Auto-Heal Demo',
   '/history': 'History',
   '/settings': 'Settings',
+  '/slack': 'Slack Integration Demo',
+  '/teams': 'Microsoft Teams Demo',
+  '/jira': 'Jira Integration Demo',
+  '/vscode': 'VS Code Extension Demo',
 };
 
 export function MainLayout() {
