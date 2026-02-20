@@ -302,14 +302,9 @@ export const workflowSteps = [
 export const sampleRequirement = {
   key: 'ORD-1234',
   title: 'Add two-factor authentication to login flow',
-  description: `As a user, I want to enable two-factor authentication for my account so that my data is more secure.
+  description: `We need to add two-factor authentication for better security.
 
-**Acceptance Criteria:**
-- Users can enable 2FA from account settings
-- Support for authenticator apps (Google Authenticator, Authy)
-- Backup codes provided during setup
-- 2FA can be disabled with password verification
-- Grace period for first-time setup`,
+Users should be able to set it up somehow.`,
   priority: 'High',
   status: 'Approved',
   assignee: 'John Smith',
@@ -1104,21 +1099,27 @@ export const automationScripts = [
 // Enhanced Workflow Data
 export const triageAnalysis = {
   requirementId: 'ORD-1234',
-  completenessScore: 85,
-  testabilityLevel: 'High' as const,
+  completenessScore: 40,
+  testabilityLevel: 'Low' as const,
   gaps: [
-    { id: 1, type: 'missing-criteria', description: 'No error handling criteria for network failures', severity: 'Medium' as const },
-    { id: 2, type: 'ambiguous', description: 'Timeout duration not specified', severity: 'Low' as const },
+    { id: 1, type: 'missing-criteria', description: 'No acceptance criteria defined - requirement lacks measurable outcomes', severity: 'High' as const },
+    { id: 2, type: 'ambiguous', description: 'Vague description - "set it up somehow" is not testable', severity: 'High' as const },
+    { id: 3, type: 'missing-details', description: 'No implementation details - where/how users enable 2FA is unclear', severity: 'High' as const },
+    { id: 4, type: 'missing-scenarios', description: 'No test scenarios or edge cases defined', severity: 'Medium' as const },
+    { id: 5, type: 'missing-success', description: 'No success criteria or expected behavior specified', severity: 'High' as const },
   ],
   dependencies: [
-    { id: 1, name: 'Authenticator App Integration', status: 'Available' as const },
-    { id: 2, name: 'Database Schema Update', status: 'In Progress' as const },
+    { id: 1, name: 'Authenticator App Integration', status: 'Unknown' as const },
+    { id: 2, name: 'Database Schema Update', status: 'Unknown' as const },
   ],
   riskFlags: [
-    { type: 'security', description: 'Requires penetration testing', impact: 'High' as const },
+    { type: 'testability', description: 'Requirement is not testable in current state - cannot proceed with test design', impact: 'High' as const },
+    { type: 'misinterpretation', description: 'High risk of misinterpretation due to vague language', impact: 'High' as const },
+    { type: 'scope-creep', description: 'Lack of boundaries may lead to scope creep during implementation', impact: 'Medium' as const },
+    { type: 'security', description: 'Security-critical feature requires detailed specification before testing', impact: 'High' as const },
   ],
-  estimatedTestingEffort: '5-7 days',
-  recommendedApproach: 'Risk-based testing with focus on security-critical authentication flows',
+  estimatedTestingEffort: 'Cannot estimate - requirement needs refinement',
+  recommendedApproach: 'Immediate stakeholder collaboration required to define acceptance criteria, implementation details, and success metrics before test design can proceed',
 };
 
 export const approvalChains = {

@@ -4,7 +4,7 @@ import { Button, Card } from '../common';
 import { TestPlanTimeline } from './TestPlanTimeline';
 import { useTestPlanWorkflow } from '../../hooks/useTestPlanWorkflow';
 import { TestArtifactLookup } from './steps/TestArtifactLookup';
-import { TestPlanCollaboration, TestPlanApproval } from './steps/testplan';
+import { TestPlanCollaboration, TestPlanRefinement, TestPlanApproval } from './steps/testplan';
 import { OrdinoThinking } from './steps/OrdinoThinking';
 
 const stepDescriptions = [
@@ -43,11 +43,11 @@ export function TestPlanWorkflowComponent() {
   const renderStepContent = () => {
     switch (currentStep) {
       case 1:
-        return <TestArtifactLookup />;
+        return <TestArtifactLookup showFullPlan={false} />;
       case 2:
         return <TestPlanCollaboration onCollaborationComplete={completeCollaboration} />;
       case 3:
-        return <OrdinoThinking />;
+        return <TestPlanRefinement onContinue={next} />;
       case 4:
         return <TestPlanApproval onApprove={approvePlan} />;
       default:

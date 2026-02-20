@@ -1,23 +1,9 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle, Loader2, FileText, GitBranch, ClipboardList } from 'lucide-react';
-import { testPlan, testDesign, draftedTestCases } from '../../../data/mockData';
+import { CheckCircle, Loader2, FileText } from 'lucide-react';
+import { draftedTestCases } from '../../../data/mockData';
 
 const creationTasks = [
-  {
-    id: 1,
-    name: 'Creating Test Plan Update',
-    description: `Updating test plan v${testPlan.version} with 2FA authentication scope`,
-    icon: ClipboardList,
-    duration: 1500,
-  },
-  {
-    id: 2,
-    name: 'Creating Test Design Version',
-    description: `Creating test design v${testDesign.version} with updated paths`,
-    icon: GitBranch,
-    duration: 2000,
-  },
   {
     id: 3,
     name: 'Creating Test Cases',
@@ -90,12 +76,12 @@ export function TestArtifactCreation() {
           )}
         </motion.div>
         <h3 className="text-lg font-semibold text-ordino-text">
-          {allComplete ? 'All Artifacts Created' : 'Creating Test Artifacts'}
+          {allComplete ? 'Test Cases Created' : 'Creating Test Cases'}
         </h3>
         <p className="text-sm text-ordino-text-muted">
           {allComplete
-            ? 'Test plan, test design, and test cases have been created'
-            : 'Creating approved test plan, test design, and test cases'}
+            ? 'Test cases have been created in the repository'
+            : 'Creating approved test cases in the repository'}
         </p>
       </div>
 
@@ -198,14 +184,6 @@ export function TestArtifactCreation() {
           <CheckCircle size={32} className="text-ordino-success mx-auto mb-3" />
           <h4 className="text-lg font-semibold text-ordino-success mb-2">Creation Complete!</h4>
           <div className="space-y-2 text-sm text-ordino-text-muted">
-            <div className="flex items-center justify-center gap-2">
-              <ClipboardList size={16} className="text-ordino-success" />
-              <span>Test Plan v{testPlan.version} updated</span>
-            </div>
-            <div className="flex items-center justify-center gap-2">
-              <GitBranch size={16} className="text-ordino-success" />
-              <span>Test Design v{testDesign.version} created</span>
-            </div>
             <div className="flex items-center justify-center gap-2">
               <FileText size={16} className="text-ordino-success" />
               <span>{draftedTestCases.length} test cases created</span>

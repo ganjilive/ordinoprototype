@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle, XCircle, Clock, User, FileText, GitBranch, AlertCircle, ChevronDown, ChevronUp } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { CheckCircle, XCircle, Clock, User, GitBranch, AlertCircle } from 'lucide-react';
 import { Button, Badge } from '../../common';
 import { testDesign, draftedTestCases } from '../../../data/mockData';
-import { TestCaseDetail } from './TestCaseDetail';
 
 interface TestDesignReviewProps {
   onApprove?: () => void;
@@ -14,14 +13,8 @@ export function TestDesignReview({ onApprove, onReject }: TestDesignReviewProps)
   const [, setCurrentPhase] = useState<'peer' | 'lead'>('peer');
   const [peerReviewComplete, setPeerReviewComplete] = useState(false);
   const [leadReviewComplete, setLeadReviewComplete] = useState(false);
-  const [expandedTestCases, setExpandedTestCases] = useState<Set<string>>(new Set());
 
   const affectedPaths = testDesign.paths.filter(p => p.status === 'affected');
-  const testCasesByMethod = {
-    automation: draftedTestCases.filter(tc => tc.testingMethod === 'automation').length,
-    manual: draftedTestCases.filter(tc => tc.testingMethod === 'manual').length,
-    smoke: draftedTestCases.filter(tc => tc.testingMethod === 'smoke').length,
-  };
 
   const peerReviewChecklist = [
     { id: 1, item: 'Test coverage completeness', status: 'checked' },
@@ -50,16 +43,6 @@ export function TestDesignReview({ onApprove, onReject }: TestDesignReviewProps)
       return () => clearTimeout(leadTimer);
     }
   }, [peerReviewComplete]);
-
-  const toggleTestCase = (testCaseId: string) => {
-    const newSet = new Set(expandedTestCases);
-    if (newSet.has(testCaseId)) {
-      newSet.delete(testCaseId);
-    } else {
-      newSet.add(testCaseId);
-    }
-    setExpandedTestCases(newSet);
-  };
 
   return (
     <motion.div
@@ -241,81 +224,6 @@ export function TestDesignReview({ onApprove, onReject }: TestDesignReviewProps)
                     <p className="text-xs text-ordino-text-muted">{path.description}</p>
                   </div>
                 ))}
-              </div>
-            </div>
-
-            {/* Drafted Test Cases */}
-            <div className="mb-4">
-              <div className="flex items-center gap-2 mb-2">
-                <FileText size={16} className="text-ordino-primary" />
-                <h4 className="font-semibold text-ordino-text text-sm">Drafted Test Cases</h4>
-              </div>
-              <div className="space-y-2 max-h-[300px] overflow-y-auto">
-                {draftedTestCases.map((testCase) => {
-                  const methodColors = {
-                    automation: 'success',
-                    manual: 'info',
-                    smoke: 'warning',
-                  } as const;
-                  const isExpanded = expandedTestCases.has(testCase.id);
-
-                  return (
-                    <div
-                      key={testCase.id}
-                      className="bg-ordino-card rounded-lg border border-ordino-border overflow-hidden"
-                    >
-                      <button
-                        onClick={() => toggleTestCase(testCase.id)}
-                        className="w-full p-2 flex items-center justify-between hover:bg-ordino-bg transition-colors"
-                      >
-                        <div className="flex items-center gap-2 flex-1 text-left">
-                          <span className="text-xs font-mono text-ordino-primary">{testCase.id}</span>
-                          <p className="text-xs text-ordino-text flex-1">{testCase.title}</p>
-                          <Badge
-                            variant={methodColors[testCase.testingMethod as keyof typeof methodColors] || 'default'}
-                            size="sm"
-                          >
-                            {testCase.testingMethod}
-                          </Badge>
-                        </div>
-                        {isExpanded ? (
-                          <ChevronUp size={14} className="text-ordino-text-muted ml-2" />
-                        ) : (
-                          <ChevronDown size={14} className="text-ordino-text-muted ml-2" />
-                        )}
-                      </button>
-                      <AnimatePresence>
-                        {isExpanded && (
-                          <motion.div
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: 'auto', opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            transition={{ duration: 0.2 }}
-                            className="overflow-hidden"
-                          >
-                            <div className="p-2 pt-0 border-t border-ordino-border">
-                              <TestCaseDetail testCase={testCase} />
-                            </div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
-                  );
-                })}
-              </div>
-              <div className="mt-2 grid grid-cols-3 gap-2 text-xs">
-                <div className="text-center p-1 bg-ordino-success/10 rounded">
-                  <span className="font-medium text-ordino-success">{testCasesByMethod.automation}</span>
-                  <span className="text-ordino-text-muted ml-1">Auto</span>
-                </div>
-                <div className="text-center p-1 bg-ordino-info/10 rounded">
-                  <span className="font-medium text-ordino-info">{testCasesByMethod.manual}</span>
-                  <span className="text-ordino-text-muted ml-1">Manual</span>
-                </div>
-                <div className="text-center p-1 bg-ordino-warning/10 rounded">
-                  <span className="font-medium text-ordino-warning">{testCasesByMethod.smoke}</span>
-                  <span className="text-ordino-text-muted ml-1">Smoke</span>
-                </div>
               </div>
             </div>
 

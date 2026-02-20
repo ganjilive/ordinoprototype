@@ -38,7 +38,7 @@ export function useTestResultsWorkflow() {
     setState(prev => ({
       ...prev,
       currentStep: 1,
-      isPlaying: true,
+      isPlaying: false,
       isComplete: false,
     }));
     updateStepStatus(1, 'active');

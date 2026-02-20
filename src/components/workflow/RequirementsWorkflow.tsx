@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, SkipForward, RotateCcw, Pause, PlayCircle, Clock, Zap, DollarSign } from 'lucide-react';
+import { Play, SkipForward, RotateCcw, Pause, PlayCircle, Clock, Zap, DollarSign, ArrowRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { Button, Card } from '../common';
 import { RequirementsTimeline } from './RequirementsTimeline';
 import { useRequirementsWorkflow } from '../../hooks/useRequirementsWorkflow';
@@ -23,6 +24,7 @@ const requirementsTimeMetrics = [
 ];
 
 export function RequirementsWorkflowComponent() {
+  const navigate = useNavigate();
   const {
     currentStep,
     steps,
@@ -35,6 +37,10 @@ export function RequirementsWorkflowComponent() {
     toggleAutoPlay,
     approveRequirement,
   } = useRequirementsWorkflow();
+
+  const handleGoToTestPlan = () => {
+    navigate('/test-plan');
+  };
 
   const renderStepContent = () => {
     switch (currentStep) {
@@ -235,10 +241,14 @@ export function RequirementsWorkflowComponent() {
                     </div>
                   </div>
 
-                  <div className="flex justify-center">
-                    <Button onClick={reset} size="lg">
+                  <div className="flex justify-center gap-3">
+                    <Button variant="ghost" onClick={reset} size="lg">
                       <RotateCcw size={18} />
                       Run Demo Again
+                    </Button>
+                    <Button onClick={handleGoToTestPlan} size="lg">
+                      <ArrowRight size={18} />
+                      Go to Test Planning
                     </Button>
                   </div>
                 </motion.div>

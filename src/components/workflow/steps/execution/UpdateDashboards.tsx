@@ -47,7 +47,7 @@ export function UpdateDashboards() {
           setSyncedIntegrations(prev => [...prev, integration.id]);
           index++;
           syncNext();
-        }, 700);
+        }, 1200);
         phaseTimers.push(timer);
       } else {
         setCompletedPhases(prev => [...prev, 0]);
@@ -55,11 +55,11 @@ export function UpdateDashboards() {
           if (!mountedRef.current) return;
           transitionTimerRef.current = null;
           setCurrentPhase(1);
-        }, 400);
+        }, 3000);
       }
     };
 
-    const startTimer = setTimeout(syncNext, 500);
+    const startTimer = setTimeout(syncNext, 800);
     phaseTimers.push(startTimer);
     return () => phaseTimers.forEach(clearTimeout);
   }, [currentPhase, completedPhases]);
@@ -75,7 +75,7 @@ export function UpdateDashboards() {
       if (progress < 100) {
         progress += 10;
         setMetricsProgress(progress);
-        const timer = setTimeout(updateProgress, 150);
+        const timer = setTimeout(updateProgress, 250);
         phaseTimers.push(timer);
       } else {
         setCompletedPhases(prev => [...prev, 1]);
@@ -83,11 +83,11 @@ export function UpdateDashboards() {
           if (!mountedRef.current) return;
           transitionTimerRef.current = null;
           setCurrentPhase(2);
-        }, 400);
+        }, 3000);
       }
     };
 
-    const startTimer = setTimeout(updateProgress, 300);
+    const startTimer = setTimeout(updateProgress, 500);
     phaseTimers.push(startTimer);
     return () => phaseTimers.forEach(clearTimeout);
   }, [currentPhase, completedPhases]);
@@ -100,7 +100,7 @@ export function UpdateDashboards() {
     const timer = setTimeout(() => {
       if (!mountedRef.current) return;
       setCompletedPhases(prev => [...prev, 2]);
-    }, 1000);
+    }, 1500);
     phaseTimers.push(timer);
     return () => phaseTimers.forEach(clearTimeout);
   }, [currentPhase, completedPhases]);

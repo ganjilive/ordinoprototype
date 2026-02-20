@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bell, CheckCircle, MessageSquare, Mail, Users, FileText, Code, GitBranch } from 'lucide-react';
-import { testDesign, draftedTestCases, automationScripts } from '../../../data/mockData';
-
-const readyScripts = automationScripts.filter(s => s.status === 'drafted');
+import { Bell, CheckCircle, MessageSquare, Mail, Users, FileText } from 'lucide-react';
+import { testDesign, draftedTestCases } from '../../../data/mockData';
 
 const notifications = [
   {
@@ -19,7 +17,7 @@ const notifications = [
     channel: 'Email',
     icon: Mail,
     recipient: 'product-team@company.com',
-    message: `${readyScripts.length} automation scripts created in test-automation-repo`,
+    message: `Test cases created and ready for review`,
     color: 'bg-blue-500',
   },
   {
@@ -40,12 +38,12 @@ export function NotificationToast() {
     notifications.forEach((notification, index) => {
       setTimeout(() => {
         setVisibleNotifications((prev) => [...prev, notification.id]);
-      }, index * 800);
+      }, index * 1500);
     });
 
     setTimeout(() => {
       setAllSent(true);
-    }, notifications.length * 800 + 500);
+    }, notifications.length * 1500 + 1000);
   }, []);
 
   return (
@@ -137,14 +135,6 @@ export function NotificationToast() {
               <div className="flex items-center gap-2">
                 <CheckCircle size={14} className="text-ordino-success" />
                 <span>{draftedTestCases.length} test cases created</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Code size={14} className="text-ordino-success" />
-                <span>{readyScripts.length} automation scripts created</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <GitBranch size={14} className="text-ordino-success" />
-                <span>Scripts available in test-automation-repo</span>
               </div>
             </div>
           </div>

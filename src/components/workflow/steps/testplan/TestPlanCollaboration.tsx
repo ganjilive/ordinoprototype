@@ -107,16 +107,16 @@ export function TestPlanCollaboration({ onCollaborationComplete }: TestPlanColla
           <Users size={28} className="text-ordino-secondary" />
         </motion.div>
         <h3 className="text-lg font-semibold text-ordino-text mb-2">
-          {phase === 0 && 'Preparing Test Plan Template...'}
-          {phase === 1 && 'Sending to Stakeholders...'}
-          {phase === 2 && 'Collecting Feedback...'}
-          {phase === 3 && 'Collaboration Complete!'}
+          {phase === 0 && 'Drafting Test Plan Template...'}
+          {phase === 1 && 'Stakeholders are reviewing the template and providing their input...'}
+          {phase === 2 && 'All stakeholders have provided their input to the test plan'}
+          {phase === 3 && 'Input Collection Complete!'}
         </h3>
         <p className="text-sm text-ordino-text-muted">
-          {phase === 0 && 'Ordino is preparing a test plan template based on existing plans'}
-          {phase === 1 && 'Sharing template with QA Lead, QA Manager, and Architect'}
-          {phase === 2 && 'Waiting for stakeholder input and feedback'}
-          {phase === 3 && 'All feedback collected and ready for refinement'}
+          {phase === 0 && 'Creating a test plan template based on IEEE 829 standards and existing plans'}
+          {phase === 1 && 'Template sent to QA Lead, QA Manager, and Architect to fill in their sections'}
+          {phase === 2 && 'Stakeholders are filling in the test plan template with their expertise'}
+          {phase === 3 && 'All sections filled in and ready for refinement'}
         </p>
       </div>
 
@@ -129,7 +129,7 @@ export function TestPlanCollaboration({ onCollaborationComplete }: TestPlanColla
         >
           <div className="flex items-center gap-2 mb-3">
             <FileText size={16} className="text-ordino-primary" />
-            <h4 className="text-sm font-semibold text-ordino-text">Referenced Existing Plans</h4>
+            <h4 className="text-sm font-semibold text-ordino-text">Reference Plans</h4>
           </div>
           <div className="space-y-2">
             {existingPlans.map((plan) => (
@@ -184,7 +184,7 @@ export function TestPlanCollaboration({ onCollaborationComplete }: TestPlanColla
                       <div className="flex items-center gap-2">
                         <CheckCircle size={18} className="text-ordino-success" />
                         <span className="text-xs text-ordino-success font-medium">
-                          {feedback[stakeholder.name]?.length || 0} comments
+                          {feedback[stakeholder.name]?.length || 0} sections filled
                         </span>
                       </div>
                     ) : (

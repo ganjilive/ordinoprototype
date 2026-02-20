@@ -2,68 +2,124 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Project Overview
+## What is Ordino?
 
-Ordino is a QA workflow automation prototype that demonstrates an AI-powered test design and automation workflow. It's a React + TypeScript + Vite application showcasing multiple QA processes: a 12-step test scripting workflow, test execution, test failure investigation, and root cause analysis.
+Ordino is a **demo/prototype** — not a production app. It showcases how AI could power QA (Quality Assurance) workflows. There is no backend, no real data, and no test suite. Everything on screen is driven by mock data and animated state machines.
+
+Built with: **React + TypeScript + Vite**, styled with **Tailwind CSS** (dark theme), animated with **Framer Motion**.
+
+---
 
 ## Commands
 
 ```bash
-npm run dev      # Start development server with HMR
-npm run build    # TypeScript check + Vite production build
-npm run lint     # ESLint check
-npm run preview  # Preview production build locally
+npm run dev      # Start local dev server at localhost:5173 (hot reload enabled)
+npm run build    # Type-check with TypeScript, then bundle for production
+npm run lint     # Run ESLint to catch code issues
+npm run preview  # Serve the production build locally to test it
 ```
 
 There are no test commands — this is a demo prototype with no test suite.
 
-## Architecture
+---
 
-### Application Structure
+## Pages & Routes
 
-The app uses React Router with lazy-loaded pages wrapped in a `MainLayout`. Each demo page is a thin wrapper that renders its corresponding component from `src/components/workflow/`:
+Two distinct demo types exist, with different architecture patterns:
 
-- `/` - Dashboard with metrics, charts, activity feed
-- `/demo` - Test Scripting Demo: 12-step QA workflow for test design and automation
-- `/execution` - Test Execution Demo: 7-step pipeline execution workflow
-- `/failure` - Test Failure Demo: failure detection and investigation workflow
-- `/rca` - RCA Demo: 7-step root cause analysis workflow
-- `/history` - Historical records and traceability
-- `/settings` - Integration and project configuration
+### Workflow Demos (stepped, animated)
 
-### Demo Architecture Pattern
+**Current Navigation (Primary Workflows):**
+| Route | What it shows |
+|---|---|
+| `/` | Dashboard — charts, metrics, activity feed |
+| `/requirement-analysis` | Requirements — AI-powered requirement analysis workflow |
+| `/test-plan` | Test Plan — test planning and strategy workflow |
+| `/test-design` | Test Design — test design and scenario creation workflow |
+| `/test-case-generation` | Test Cases — 6-step test case generation workflow |
+| `/automation-script-generation` | Automation — automation script generation workflow |
+| `/test-execution` | Test Execution — test execution workflow |
+| `/results-generation` | Test Results — test results analysis workflow |
+| `/root-cause-analysis` | RCA — root cause analysis workflow |
+| `/auto-healing-tests` | Auto Heal — AI-powered test healing workflow |
+| `/history` | Historical records and traceability view |
+| `/settings` | Integration and project configuration |
 
-Each interactive demo follows the same architecture:
+**Legacy Demo Routes (still functional):**
+| Route | What it shows |
+|---|---|
+| `/demo` | Test Scripting — 12-step workflow for designing & automating tests |
+| `/execution` | Test Execution Demo — 7-step CI/CD pipeline run |
+| `/failure` | Test Failure Demo — failure detection and investigation |
+| `/rca` | RCA Demo — 7-step deep-dive into why a build broke |
+| `/heal` | Auto-Heal Demo — 7-step AI-powered self-healing of broken tests |
+
+### Platform Integration Demos (free-form chat)
+| Route | What it shows |
+|---|---|
+| `/slack` | Ordino as a Slack bot in `#qa-alerts` — CI failure alert + keyword chat |
+| `/teams` | Ordino as a Teams bot — Sprint regression report + keyword chat |
+| `/jira` | Auto-created Jira bug ticket QA-847 with RCA comment + comment interaction |
+| `/vscode` | VS Code with coverage gutter on `auth.test.ts` + Ordino extension panel |
+
+All pages are **lazy-loaded** and wrapped in a shared `MainLayout` (sidebar + header).
+
+---
+
+## Architecture: Workflow Demos
+
+Every stepped demo follows this four-layer pattern:
 
 ```
-src/pages/XxxDemo.tsx           → thin wrapper, just renders <XxxDemoComponent />
-src/components/workflow/
-  XxxDemo.tsx                   → orchestrator: controls, metrics cards, timeline sidebar, step content
-  XxxTimeline.tsx               → sidebar timeline with animated progress line and step circles
-src/hooks/useXxxDemo.ts         → state machine: currentStep, steps[], isPlaying, isComplete
-src/components/workflow/steps/
-  xxx/StepComponent.tsx         → individual step visualizations
-  xxx/index.ts                  → barrel export
-src/data/xxxMockData.ts         → flat-exported scenario data
+src/pages/XxxDemo.tsx                    → Thin wrapper, just renders the component
+src/components/workflow/XxxDemo.tsx      → Main UI: playback controls, metrics, timeline + step content
+src/components/workflow/XxxTimeline.tsx  → Left sidebar with animated step-progress circles
+src/hooks/useXxxDemo.ts                  → State machine: tracks current step, controls playback
+src/components/workflow/steps/xxx/       → One component per step (the content shown on screen)
+src/data/xxxMockData.ts                  → All fake data the steps display
 ```
 
-**State machine hooks**: `useWorkflowDemo` (12-step scripting), `useTestExecutionDemo` (7-step execution), `useTestFailureDemo`, `useRCADemo`.
+### The State Machine Hook
 
-All hooks expose: `currentStep`, `steps`, `isPlaying`, `isComplete`, `start`, `next`, `reset`, `toggleAutoPlay`. Blocking steps disable `next` and auto-play; unblocking is done via a dedicated callback (e.g., `onApprove`, `completeHumanCollaboration`).
+All workflow hooks expose the same interface:
 
-**Auto-play**: A `setInterval` in a `useEffect` calls `next()` every 3000ms when `isPlaying` is true and the current step is not a blocking step.
+```
+currentStep      — active step number (0 = not started)
+steps[]          — array of steps with status: 'pending' | 'active' | 'completed'
+isPlaying        — whether auto-play is running
+isComplete       — whether the final step has been passed
+start()          — begin from step 1
+next()           — advance manually
+reset()          — return to unstarted state
+toggleAutoPlay() — turn auto-play on/off
+```
 
-### Test Scripting Demo (Core Feature)
+**Available hooks:**
+- Legacy demo hooks: `useWorkflowDemo` (12 steps), `useTestExecutionDemo` (7), `useTestFailureDemo`, `useRCADemo` (7), `useAutoHealDemo` (7)
+- New workflow hooks: `useRequirementsWorkflow`, `useTestPlanWorkflow`, `useTestDesignWorkflow`, `useTestCasesWorkflow` (6 steps), `useAutomationWorkflow`, `useTestExecutionWorkflow`, `useTestResultsWorkflow`, `useRCAWorkflow`, `useAutoHealingWorkflow`
 
-Managed by `useWorkflowDemo.ts`, which has extra state beyond the base pattern:
-- **Blocker system**: `triggerBlocker()` / `resolveBlocker()` set `isBlocked: true`, halting auto-play and disabling Next. Blockers are displayed by `BlockerDisplay.tsx`.
-- **Approval tracking**: `approvalHistory`, `revisionRequests` stored in state.
-- **12 steps**: Requirement Detected → Analyze + Triage → Triage Approval → Find Artifacts → Draft Test Design → Review → Create Artifacts → Draft Test Data → Draft Automation → Review Automation → Create Automation → Notify Stakeholders.
-- Approval steps (3, 6, 10) call `onApprove(next)` / `onReject(reset)` from within the step component.
+The naming pattern for new hooks is `use[Name]Workflow`, while legacy hooks use `use[Name]Demo`. Both follow the same state machine interface.
 
-### Step Components Pattern
+### Auto-Play
 
-Step components in `src/components/workflow/steps/` use a multi-phase pattern with self-contained timers:
+Advances automatically every **3 seconds** via `setInterval`. Pauses at **blocking steps** that require human interaction. Blocking callbacks: `onApprove`, `onReject`, `completeHumanCollaboration`, `approveHealing`.
+
+### Test Scripting Demo (`/demo`) — Extra Complexity
+
+The flagship demo has two features the others don't:
+
+- **Blocker system** — `triggerBlocker()` freezes the demo and shows a `BlockerDisplay.tsx` overlay; `resolveBlocker()` clears it.
+- **Approval tracking** — `approvalHistory` and `revisionRequests` are stored in hook state and persist across steps.
+
+**12 steps:** Requirement Detected → Analyze + Triage → **Triage Approval** → Find Artifacts → Draft Test Design → **Review** → Create Artifacts → Draft Test Data → Draft Automation → **Review Automation** → Create Automation → Notify Stakeholders
+
+Steps 3, 6, and 10 (bold) are approval gates where the component calls `onApprove(next)` or `onReject(reset)`.
+
+### Writing Step Components
+
+Each step animates through internal **phases** ("loading" → "results appear" → "done").
+
+**Always include a `mountedRef`** to prevent state updates after unmount:
 
 ```typescript
 const mountedRef = useRef(true);
@@ -76,63 +132,170 @@ useEffect(() => {
     if (transitionTimerRef.current) clearTimeout(transitionTimerRef.current);
   };
 }, []);
-
-// Each phase has its own useEffect that guards with: if (!mountedRef.current) return;
+// Check if (!mountedRef.current) return; at the top of every phase's useEffect
 ```
 
-`mountedRef` is critical — without it, unmounting a step mid-animation causes state-update-on-unmounted-component errors. Always include it when writing new step components.
+**Track phases with two state values:**
+- `currentPhase` — drives timers
+- `completedPhases` — array of finished phase indices, drives what's visible
 
-Phases advance by setting `currentPhase` and tracking `completedPhases` (array of completed phase indices). Render conditionally: `{currentPhase >= 1 && <Phase1 />}` or `{completedPhases.includes(0) && <PostPhase0 />}`.
+```tsx
+{currentPhase >= 1 && <PhaseOneContent />}
+{completedPhases.includes(0) && <SomethingAfterPhase0 />}
+```
 
-### Theming
+---
 
-Custom Tailwind theme defined in `src/index.css` using CSS variables:
-- `ordino-bg`, `ordino-card` - Background colors (dark theme)
-- `ordino-primary` (#f97316 orange), `ordino-secondary` (#3b82f6 blue)
-- `ordino-success`, `ordino-warning`, `ordino-error` - Status colors
-- `ordino-text`, `ordino-text-muted`, `ordino-border`
+## Architecture: Platform Integration Demos
 
-### Animation Utilities
+No stepped workflow, no hooks, no timeline. Pure free-form chat/comment interaction inside a realistic platform UI mockup.
 
-`src/utils/animations.ts` exports reusable Framer Motion variants:
-- `staggerContainerVariants` / `slideUpVariants` — staggered list entrances (used on Dashboard, History)
-- `workflowStepVariants` — pending/active/completed states
-- `glowPulseVariants`, `spinnerVariants`, `fadeInVariants`
+```
+src/pages/XxxDemo.tsx                        → Thin wrapper
+src/components/platform/XxxDemo.tsx          → Full platform UI + state (useState only, no custom hook)
+src/components/platform/xxx/                 → Sub-components (sidebar, message list, input, cards)
+src/data/xxxMockData.ts                      → Pre-populated messages + keyword response map
+src/utils/platformChat.ts                    → Shared matchResponse() function
+```
 
-Step components use inline `motion` variants rather than these shared ones. Use the shared variants for page-level layouts.
+### Keyword Matching (`src/utils/platformChat.ts`)
 
-### Key Libraries
+```typescript
+matchResponse(input: string, responses: Record<string, string>): string
+```
 
-- **framer-motion** - All animations and transitions
-- **lucide-react** - Icon library
-- **recharts** - Dashboard charts
-- **react-router-dom** - Routing with lazy loading
-- **clsx** + **tailwind-merge** - Conditional class composition via `cn()` in `src/utils/helpers.ts`
+Response keys are pipe-separated keyword lists: `"failure|failing|failed"`. The function lowercases the input and returns the first match. If nothing matches, returns a generic fallback. Mock data files export a `xxxKeywordResponses` record and a `xxxSuggestedPrompts` array.
 
-### Data Layer
+### Platform Demo Layout
 
-Mock data files in `src/data/` use flat named exports (not default exports):
-- `mockData.ts` - Test Scripting Demo: test plans, designs, cases, triage analysis, approval chains, automation scripts
-- `testExecutionMockData.ts` - Test Execution Demo: test suite, results, pipeline stages, commit details, time metrics
-- `testFailureMockData.ts` - Test Failure Demo scenario data
-- `rcaMockData.ts` - RCA Demo: failing builds, analysis steps, Slack messages, human responses, RCA report
+All platform demos use `h-[calc(100vh-140px)]` to fill available height (accounts for the 64px header + 24px top/bottom padding from `MainLayout`'s `<main className="flex-1 p-6">`).
 
-All types are in `src/types/index.ts`. When adding a new demo, append its types to that file rather than creating separate type files.
+### Chat Interaction Pattern
 
-### Common Components
+All platform demos follow the same interaction flow:
+1. User types or clicks a suggested prompt chip
+2. User message appears immediately
+3. After 1500ms, Ordino responds (same `matchResponse` logic)
 
-`src/components/common/` exports: `Button` (variants: `primary`, `secondary`, `ghost`; sizes: `sm`, `md`, `lg`), `Card`, `Badge` (variants: `primary`, `success`, `warning`, `error`, `info`), `Modal`, `Logo`.
+**Use `useRef` for message IDs** — never `Date.now()` in render/event handlers (ESLint rule `react-hooks/purity` flags it). Use an `idCounterRef` pattern:
+```typescript
+const idCounterRef = useRef(0);
+const nextId = () => { idCounterRef.current += 1; return idCounterRef.current; };
+```
 
-## QA Domain Context
+### VS Code Demo — 4-Panel Layout
 
-This prototype demonstrates ISTQB/IEEE 829 compliant QA processes. When modifying workflow steps, maintain proper QA terminology and process ordering:
-- Test design (scenarios, paths, conditions) must be drafted BEFORE test cases
-- Test cases flow from test design, not vice versa
-- Traceability links requirements → test designs → test cases
+```
+[ActivityBar 48px] [FileExplorer 176px] [Editor flex-1] [ExtensionPanel 320px]
+```
 
-## UI/UX Guidelines
+Coverage gutter: a 6px colored strip between line numbers and code. Line rows get a subtle tint on uncovered lines (`bg-red-500/5`). Coverage statuses: `'covered'` (green) | `'uncovered'` (red) | `'partial'` (yellow) | `'none'` (transparent).
 
-- Approval animations should show state changes clearly (e.g., green checkmark icon) without filling entire elements with color
-- Labels should be unambiguous; add subtitles when needed (e.g., "Testing Effort" has subtitle "without automation")
-- Blocking steps should show a clear visual indicator in the step header (e.g., "— Awaiting Human Input" badge)
-- ROI metrics cards (Manual Time / Ordino Time / Est. Cost Savings) are shown for all demos; cost = `(manualMinutes / 60) * 150` at $150/hr
+---
+
+## Sidebar Navigation Structure
+
+Two groups, defined in `src/components/layout/Sidebar.tsx`:
+
+1. **`workflowNavItems`** — Dashboard → Requirements → Test Plan → Test Design → Test Cases → Automation → Test Execution → Test Results → RCA → Auto Heal (unlabeled, shown in SDLC order)
+2. **`bottomNavItems`** — History, Settings (separated by a top border)
+
+**Note:** Platform integration demos (Slack, Teams, Jira, VS Code) are currently commented out in the sidebar navigation but routes remain accessible.
+
+When adding a new route, also add its title to `pageTitles` in `src/components/layout/MainLayout.tsx`.
+
+---
+
+## Theming & Styling
+
+CSS variables defined in `src/index.css`, used as Tailwind classes:
+
+| Class | Meaning |
+|---|---|
+| `bg-ordino-bg` | Main page background (dark) |
+| `bg-ordino-card` | Card/panel background (slightly lighter) |
+| `text-ordino-primary` | Orange (#f97316) — primary brand color |
+| `text-ordino-secondary` | Blue (#3b82f6) — secondary accent |
+| `text-ordino-success/warning/error` | Green / amber / red for status |
+| `text-ordino-text` | Main body text |
+| `text-ordino-text-muted` | Dimmed/secondary text |
+| `border-ordino-border` | Subtle border color |
+
+Use `cn()` from `src/utils/helpers.ts` (wraps `clsx` + `tailwind-merge`) for conditional class composition.
+
+---
+
+## Animations
+
+`src/utils/animations.ts` exports shared Framer Motion variants for **page-level** use only:
+
+- `staggerContainerVariants` + `slideUpVariants` — staggered list entry (Dashboard, History)
+- `workflowStepVariants` — step circles: pending / active / completed
+- `glowPulseVariants`, `spinnerVariants`, `fadeInVariants` — misc effects
+
+Step components define their own inline variants. Platform demo components also define their own inline variants.
+
+---
+
+## Mock Data & Types
+
+All fake data lives in `src/data/` as **named exports** (never default exports).
+
+| File | Used by |
+|---|---|
+| `mockData.ts` | Test Scripting Demo |
+| `testExecutionMockData.ts` | Test Execution Demo |
+| `testFailureMockData.ts` | Test Failure Demo |
+| `rcaMockData.ts` | RCA Demo |
+| `autoHealMockData.ts` | Auto-Heal Demo |
+| `slackMockData.ts` | Slack Integration Demo |
+| `teamsMockData.ts` | Teams Integration Demo |
+| `jiraMockData.ts` | Jira Integration Demo |
+| `vscodeMockData.ts` | VS Code Extension Demo |
+
+All **TypeScript types** live in `src/types/index.ts`. Add new types there — never create separate type files.
+
+---
+
+## Reusable UI Components
+
+Located in `src/components/common/`. Import from the barrel: `import { Button, Badge } from '@/components/common'`.
+
+- **Button** — variants: `primary`, `secondary`, `ghost`, `danger`; sizes: `sm`, `md`, `lg`
+- **Badge** — variants: `default`, `primary`, `secondary`, `success`, `warning`, `error`, `info`; sizes: `sm`, `md`
+- **Card** — with sub-components `CardHeader`, `CardTitle`, `CardContent`
+- **Modal** — props: `isOpen`, `onClose`, `title`, `size` (`sm`/`md`/`lg`)
+- **Logo** — props: `size` (`sm`/`md`/`lg`), `showText`
+
+---
+
+## Key Libraries
+
+| Library | Purpose |
+|---|---|
+| `framer-motion` | All animations and transitions |
+| `lucide-react` | Icons — check exports exist before using (e.g. `Extensions` does not exist; use `Package`) |
+| `recharts` | Charts on the Dashboard |
+| `react-router-dom` | Client-side routing with lazy loading |
+| `clsx` + `tailwind-merge` | Class composition via `cn()` |
+
+---
+
+## QA Domain Rules
+
+Follows **ISTQB / IEEE 829** standards. When changing workflow steps, maintain this order:
+
+1. **Requirements** are analyzed first
+2. **Test Design** (scenarios, paths, edge conditions) is drafted from requirements
+3. **Test Cases** are created from test design — never the other way around
+4. **Traceability** must flow: Requirement → Test Design → Test Case
+
+---
+
+## UI/UX Rules
+
+- **Approval animations**: show a green checkmark icon — do not fill entire cards with color
+- **Labels**: add a subtitle when meaning could be unclear (e.g. "Testing Effort" → subtitle "without automation")
+- **Blocking steps**: show an "— Awaiting Human Input" badge in the step header
+- **ROI metrics cards**: shown at the top of every workflow demo — Manual Time / Ordino Time / Est. Cost Savings. Formula: `(manualMinutes / 60) * 150` ($150/hr rate)
+- **Platform demo UIs**: use platform-native color schemes (Slack: purple `#19172d`, Teams: `#201f3d`, Jira: `#1a1f2e`, VS Code: `#1e1e2e`) — do not use ordino-card/ordino-bg inside platform mockups

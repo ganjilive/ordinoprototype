@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Bot, User, Sparkles, CheckCircle, ExternalLink } from 'lucide-react';
+import { Send, Bot, User, Sparkles, CheckCircle, ExternalLink, Users } from 'lucide-react';
 import { Button, Badge } from '../../../common';
 
 interface RequirementRefinementProps {
@@ -39,14 +39,26 @@ export function RequirementRefinement({ onApprove }: RequirementRefinementProps)
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [showCollaboration, setShowCollaboration] = useState(false);
   const [showRefinedRequirement, setShowRefinedRequirement] = useState(false);
   const [showApproval, setShowApproval] = useState(false);
+  const [conversationTurns, setConversationTurns] = useState(0);
+  const [stakeholderFeedback, setStakeholderFeedback] = useState<string[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const idCounterRef = useRef(1);
+  const mountedRef = useRef(true);
+  const AUTO_SHOW_AFTER_TURNS = 2;
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
 
   useEffect(() => {
     scrollToBottom();
@@ -63,10 +75,32 @@ export function RequirementRefinement({ onApprove }: RequirementRefinementProps)
     for (const [keywords, response] of Object.entries(requirementChatResponses)) {
       const keywordList = keywords.split('|');
       if (keywordList.some(keyword => lowerQuery.includes(keyword))) {
-        // Show refined requirement if user asks for it
+        // Show collaboration and refined requirement if user asks for it
         if (keywords.includes('ready') || keywords.includes('show') || keywords.includes('refined')) {
-          setTimeout(() => setShowRefinedRequirement(true), 1500);
-          setTimeout(() => setShowApproval(true), 3000);
+          setTimeout(() => {
+            if (!mountedRef.current) return;
+            setShowCollaboration(true);
+
+            setTimeout(() => {
+              if (!mountedRef.current) return;
+              setStakeholderFeedback(['ba']);
+
+              setTimeout(() => {
+                if (!mountedRef.current) return;
+                setStakeholderFeedback(['ba', 'qa']);
+
+                setTimeout(() => {
+                  if (!mountedRef.current) return;
+                  setShowRefinedRequirement(true);
+
+                  setTimeout(() => {
+                    if (!mountedRef.current) return;
+                    setShowApproval(true);
+                  }, 1500);
+                }, 1500);
+              }, 1200);
+            }, 1000);
+          }, 1500);
         }
         return response;
       }
@@ -83,7 +117,7 @@ Try asking: "${suggestedPrompts[0]}"`;
 
   const handleSend = (text?: string) => {
     const messageText = text || inputValue.trim();
-    if (!messageText) return;
+    if (!messageText || !mountedRef.current) return;
 
     const userMessage: ChatMessage = {
       id: nextId(),
@@ -96,7 +130,13 @@ Try asking: "${suggestedPrompts[0]}"`;
     setInputValue('');
     setIsTyping(true);
 
+    // Increment conversation turns
+    const newTurnCount = conversationTurns + 1;
+    setConversationTurns(newTurnCount);
+
     setTimeout(() => {
+      if (!mountedRef.current) return;
+
       const response = findResponse(messageText);
       const assistantMessage: ChatMessage = {
         id: nextId(),
@@ -107,6 +147,51 @@ Try asking: "${suggestedPrompts[0]}"`;
 
       setMessages((prev) => [...prev, assistantMessage]);
       setIsTyping(false);
+
+      // Check if we should auto-show collaboration after N turns
+      if (newTurnCount >= AUTO_SHOW_AFTER_TURNS && !showCollaboration) {
+        // Add transition message
+        setTimeout(() => {
+          if (!mountedRef.current) return;
+
+          const transitionMessage: ChatMessage = {
+            id: nextId(),
+            role: 'assistant',
+            content: "I've gathered enough context from our discussion. Let me collaborate with the BA and QA Lead to finalize the refined requirement.",
+            timestamp: new Date(),
+          };
+
+          setMessages((prev) => [...prev, transitionMessage]);
+
+          // Show collaboration section
+          setTimeout(() => {
+            if (!mountedRef.current) return;
+            setShowCollaboration(true);
+
+            // Animate stakeholder feedback
+            setTimeout(() => {
+              if (!mountedRef.current) return;
+              setStakeholderFeedback(['ba']);
+
+              setTimeout(() => {
+                if (!mountedRef.current) return;
+                setStakeholderFeedback(['ba', 'qa']);
+
+                // Show refined requirement after collaboration
+                setTimeout(() => {
+                  if (!mountedRef.current) return;
+                  setShowRefinedRequirement(true);
+
+                  setTimeout(() => {
+                    if (!mountedRef.current) return;
+                    setShowApproval(true);
+                  }, 1500);
+                }, 1500);
+              }, 1200);
+            }, 1000);
+          }, 1000);
+        }, 1500);
+      }
     }, 1500);
   };
 
@@ -220,6 +305,90 @@ Try asking: "${suggestedPrompts[0]}"`;
           </div>
         </div>
       </div>
+
+      {/* Collaboration Section */}
+      {showCollaboration && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-ordino-card rounded-xl border border-ordino-border p-6"
+        >
+          <div className="flex items-center gap-2 mb-4">
+            <Users size={20} className="text-ordino-primary" />
+            <h3 className="text-lg font-semibold text-ordino-text">Collaborating with Stakeholders</h3>
+          </div>
+
+          <div className="space-y-4">
+            {/* BA Stakeholder */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: stakeholderFeedback.includes('ba') ? 1 : 0.5, x: 0 }}
+              transition={{ delay: 0.2 }}
+              className="bg-ordino-bg rounded-lg border border-ordino-border p-4"
+            >
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0">
+                  <span className="text-sm font-semibold text-blue-400">BA</span>
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-sm font-semibold text-ordino-text">Jane Smith</span>
+                    <Badge variant="info" size="sm">Business Analyst</Badge>
+                    {stakeholderFeedback.includes('ba') && (
+                      <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}>
+                        <CheckCircle size={16} className="text-ordino-success" />
+                      </motion.div>
+                    )}
+                  </div>
+                  {stakeholderFeedback.includes('ba') && (
+                    <motion.p
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="text-sm text-ordino-text-muted"
+                    >
+                      "Acceptance criteria are clear and testable. The timeout specifications and supported methods align with product requirements. Approved for test design."
+                    </motion.p>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+
+            {/* QA Lead Stakeholder */}
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: stakeholderFeedback.includes('qa') ? 1 : 0.5, x: 0 }}
+              transition={{ delay: 0.4 }}
+              className="bg-ordino-bg rounded-lg border border-ordino-border p-4"
+            >
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0">
+                  <span className="text-sm font-semibold text-green-400">QA</span>
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-sm font-semibold text-ordino-text">Michael Chen</span>
+                    <Badge variant="success" size="sm">QA Lead</Badge>
+                    {stakeholderFeedback.includes('qa') && (
+                      <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}>
+                        <CheckCircle size={16} className="text-ordino-success" />
+                      </motion.div>
+                    )}
+                  </div>
+                  {stakeholderFeedback.includes('qa') && (
+                    <motion.p
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="text-sm text-ordino-text-muted"
+                    >
+                      "Security requirements are well-defined with proper error handling and rate limiting. Ready to proceed with comprehensive test planning."
+                    </motion.p>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </motion.div>
+      )}
 
       {/* Refined Requirement */}
       {showRefinedRequirement && (

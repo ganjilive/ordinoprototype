@@ -3,8 +3,8 @@ import { Play, SkipForward, RotateCcw, Pause, PlayCircle, Clock, Zap, DollarSign
 import { Button, Card } from '../common';
 import { TestCasesTimeline } from './TestCasesTimeline';
 import { useTestCasesWorkflow } from '../../hooks/useTestCasesWorkflow';
-import { TestArtifactLookup, TestDesignReview, TestArtifactCreation, NotificationToast } from './steps';
-import { GenerateTestCases, MaintainTraceability } from './steps/testcases';
+import { TestArtifactLookup, TestArtifactCreation, NotificationToast } from './steps';
+import { GenerateTestCases, MaintainTraceability, TestCasesApproval, GatherExistingTestCases } from './steps/testcases';
 
 const stepDescriptions = [
   '',
@@ -44,15 +44,15 @@ export function TestCasesWorkflowComponent() {
   const renderStepContent = () => {
     switch (currentStep) {
       case 1:
-        return <TestArtifactLookup />;
+        return <TestArtifactLookup showFullPlan={false} />;
       case 2:
-        return <TestArtifactLookup />;
+        return <GatherExistingTestCases />;
       case 3:
         return <GenerateTestCases />;
       case 4:
         return <MaintainTraceability />;
       case 5:
-        return <TestDesignReview onApprove={approveTestCases} />;
+        return <TestCasesApproval onApprove={approveTestCases} />;
       case 6:
         return (
           <>

@@ -96,10 +96,28 @@ export function useTestPlanWorkflow() {
   }, []);
 
   const completeCollaboration = useCallback(() => {
-    setState((prev) => ({
-      ...prev,
-      collaborationComplete: true,
-    }));
+    setState((prev) => {
+      if (prev.currentStep >= TOTAL_STEPS) {
+        return { ...prev, collaborationComplete: true, isComplete: true, isPlaying: false };
+      }
+
+      const newStep = prev.currentStep + 1;
+      return {
+        ...prev,
+        collaborationComplete: true,
+        currentStep: newStep,
+        steps: prev.steps.map((step) => ({
+          ...step,
+          status:
+            step.id < newStep
+              ? 'completed'
+              : step.id === newStep
+              ? 'active'
+              : 'pending',
+        })),
+        isComplete: newStep > TOTAL_STEPS,
+      };
+    });
   }, []);
 
   const approvePlan = useCallback(() => {

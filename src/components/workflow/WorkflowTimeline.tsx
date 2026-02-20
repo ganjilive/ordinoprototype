@@ -61,21 +61,6 @@ export function WorkflowTimeline({ steps, currentStep }: WorkflowTimelineProps) 
                   step.status === 'active' && 'bg-ordino-card border-2 border-ordino-primary',
                   step.status === 'pending' && 'bg-ordino-card border-2 border-ordino-border'
                 )}
-                animate={
-                  step.status === 'active'
-                    ? {
-                        boxShadow: [
-                          '0 0 0 0 rgba(249, 115, 22, 0.4)',
-                          '0 0 0 10px rgba(249, 115, 22, 0)',
-                        ],
-                      }
-                    : {}
-                }
-                transition={
-                  step.status === 'active'
-                    ? { duration: 1.5, repeat: Infinity }
-                    : {}
-                }
               >
                 {step.status === 'completed' ? (
                   <Check size={16} className="text-white" />

@@ -40,7 +40,7 @@ export function useTestCasesWorkflow() {
     setState(prev => ({
       ...prev,
       currentStep: 1,
-      isPlaying: true,
+      isPlaying: false,
       isComplete: false,
       testCasesApproved: false,
     }));
@@ -103,7 +103,9 @@ export function useTestCasesWorkflow() {
       ...prev,
       testCasesApproved: true,
     }));
-  }, []);
+    // Advance to next step after approval
+    next();
+  }, [next]);
 
   // Step 5 (Approval) blocks until testCasesApproved
   const isBlockingStep = state.currentStep === 5 && !state.testCasesApproved;

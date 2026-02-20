@@ -36,8 +36,22 @@ export function TestResultsWorkflowComponent() {
     toggleAutoPlay,
   } = useTestResultsWorkflow();
 
+  // Defensive check - ensure hook returns valid values
+  if (!steps || !Array.isArray(steps) || typeof currentStep !== 'number') {
+    return (
+      <div className="p-6">
+        <Card>
+          <p className="text-ordino-text">Error: Invalid workflow state. Please refresh the page.</p>
+        </Card>
+      </div>
+    );
+  }
+
+  // Ensure currentStep is a valid number
+  const safeCurrentStep = typeof currentStep === 'number' && currentStep >= 0 ? currentStep : 0;
+
   const renderStepContent = () => {
-    switch (currentStep) {
+    switch (safeCurrentStep) {
       case 1:
         return <CollectResults />;
       case 2:
@@ -58,14 +72,14 @@ export function TestResultsWorkflowComponent() {
 
   // Calculate cumulative metrics
   const cumulativeManualMinutes = testResultsTimeMetrics
-    .slice(0, currentStep + 1)
+    .slice(0, safeCurrentStep + 1)
     .reduce((acc, curr) => acc + curr.manual, 0);
 
   const cumulativeOrdinoSeconds = testResultsTimeMetrics
-    .slice(0, currentStep + 1)
+    .slice(0, safeCurrentStep + 1)
     .reduce((acc, curr) => acc + curr.ordino, 0);
 
-  const costSaved = (cumulativeManualMinutes / 60 * 150).toFixed(0);
+  const costSaved = cumulativeManualMinutes > 0 ? (cumulativeManualMinutes / 60 * 150).toFixed(0) : '0';
 
   return (
     <div className="space-y-6">
@@ -79,7 +93,7 @@ export function TestResultsWorkflowComponent() {
             </p>
           </div>
           <div className="flex items-center gap-2">
-            {currentStep === 0 ? (
+            {safeCurrentStep === 0 ? (
               <Button onClick={start}>
                 <Play size={18} />
                 Start Demo
@@ -109,7 +123,7 @@ export function TestResultsWorkflowComponent() {
       </Card>
 
       {/* Time/Cost Tracker */}
-      {currentStep > 0 && (
+      {safeCurrentStep > 0 && (
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -162,10 +176,10 @@ export function TestResultsWorkflowComponent() {
       )}
 
       {/* Main content */}
-      {currentStep > 0 && (
+      {safeCurrentStep > 0 && (
         <div className="flex gap-6">
           {/* Timeline sidebar */}
-          <TestResultsTimeline steps={steps} currentStep={currentStep} />
+          <TestResultsTimeline steps={steps} currentStep={safeCurrentStep} />
 
           {/* Step visualization */}
           <div className="flex-1">
@@ -174,7 +188,7 @@ export function TestResultsWorkflowComponent() {
               <div className="mb-6">
                 <div className="flex items-center gap-2 mb-2">
                   <span className="text-xs font-medium text-ordino-primary uppercase tracking-wider">
-                    Step {currentStep} of 4
+                    Step {safeCurrentStep} of 4
                   </span>
                   {isComplete && (
                     <span className="text-xs font-medium text-ordino-success uppercase tracking-wider">
@@ -183,14 +197,14 @@ export function TestResultsWorkflowComponent() {
                   )}
                 </div>
                 <p className="text-ordino-text-muted">
-                  {stepDescriptions[currentStep]}
+                  {stepDescriptions[safeCurrentStep] || ''}
                 </p>
               </div>
 
               {/* Step content */}
               <AnimatePresence mode="wait">
                 <motion.div
-                  key={currentStep}
+                  key={safeCurrentStep}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
@@ -224,13 +238,15 @@ export function TestResultsWorkflowComponent() {
                     <div className="text-center p-3 bg-ordino-bg/50 rounded-lg">
                       <p className="text-sm text-ordino-text-muted">Total Time Saved</p>
                       <p className="text-2xl font-bold text-ordino-success">
-                        {((cumulativeManualMinutes - cumulativeOrdinoSeconds / 60) / 60).toFixed(1)} Hours
+                        {cumulativeManualMinutes > 0 && cumulativeOrdinoSeconds > 0
+                          ? `${((cumulativeManualMinutes - cumulativeOrdinoSeconds / 60) / 60).toFixed(1)} Hours`
+                          : '0 Hours'}
                       </p>
                     </div>
                     <div className="text-center p-3 bg-ordino-bg/50 rounded-lg">
                       <p className="text-sm text-ordino-text-muted">Speed Improvement</p>
                       <p className="text-2xl font-bold text-ordino-primary">
-                        {cumulativeOrdinoSeconds > 0
+                        {cumulativeOrdinoSeconds > 0 && cumulativeManualMinutes > 0
                           ? `~${Math.round(cumulativeManualMinutes * 60 / cumulativeOrdinoSeconds)}x Faster`
                           : 'N/A'}
                       </p>
@@ -255,7 +271,7 @@ export function TestResultsWorkflowComponent() {
       )}
 
       {/* Initial state */}
-      {currentStep === 0 && (
+      {safeCurrentStep === 0 && (
         <Card className="text-center py-16">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-ordino-primary/20 flex items-center justify-center">

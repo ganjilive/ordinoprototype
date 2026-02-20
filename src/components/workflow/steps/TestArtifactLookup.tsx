@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FileText, Search, CheckCircle, AlertTriangle, FileSpreadsheet as FileExcel, File, GitBranch, Database, FlaskConical, ChevronDown, ChevronUp, Target, List, BookOpen, CheckCircle2, XCircle, AlertCircle, Info } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { Badge } from '../../common';
-import { testPlan, testDesign, existingTestCases } from '../../../data/mockData';
+import { testPlan, testDesign, existingTestCases, sampleRequirement } from '../../../data/mockData';
 
 interface ExpandableSectionProps {
   title: string;
@@ -49,7 +49,11 @@ function ExpandableSection({ title, icon: Icon, isExpanded, onToggle, children }
   );
 }
 
-export function TestArtifactLookup() {
+interface TestArtifactLookupProps {
+  showFullPlan?: boolean;
+}
+
+export function TestArtifactLookup({ showFullPlan = true }: TestArtifactLookupProps) {
   const [currentPhase, setCurrentPhase] = useState(0);
   const [phaseProgress, setPhaseProgress] = useState(0);
   const [completedPhases, setCompletedPhases] = useState<Set<number>>(new Set());
@@ -57,25 +61,39 @@ export function TestArtifactLookup() {
 
   useEffect(() => {
     const progressInterval = setInterval(() => {
-      setPhaseProgress((prev) => {
-        if (prev >= 100) {
-          if (currentPhase < 3) {
-            // Mark current phase as completed before moving to next (4 phases: 0-3)
-            setCompletedPhases((prev) => new Set(prev).add(currentPhase));
-            setCurrentPhase((prev) => prev + 1);
-            return 0;
-          } else {
-            // Mark final phase as completed
-            setCompletedPhases((prev) => new Set(prev).add(currentPhase));
-            return 100;
-          }
+      setPhaseProgress((prevProgress) => {
+        if (prevProgress >= 100) {
+          // If showFullPlan is false, do 4 phases (0-3): Test Plan, Test Design, Requirement, UI Design
+          // If showFullPlan is true, do 4 phases (0-3): Test Plan, Test Design Analysis, Test Case Discovery, Gap Analysis
+          const maxPhase = 3;
+
+          setCurrentPhase((prevPhase) => {
+            if (prevPhase < maxPhase) {
+              // Mark current phase as completed before moving to next
+              setCompletedPhases((prevCompleted) => {
+                const newCompleted = new Set(prevCompleted);
+                newCompleted.add(prevPhase);
+                return newCompleted;
+              });
+              return prevPhase + 1;
+            } else {
+              // Mark final phase as completed
+              setCompletedPhases((prevCompleted) => {
+                const newCompleted = new Set(prevCompleted);
+                newCompleted.add(prevPhase);
+                return newCompleted;
+              });
+              return prevPhase;
+            }
+          });
+          return 0;
         }
-        return prev + 2;
+        return prevProgress + 2;
       });
     }, 50);
 
     return () => clearInterval(progressInterval);
-  }, [currentPhase]);
+  }, [showFullPlan]);
 
   const renderPhase1 = (isCompleted: boolean) => (
     <motion.div
@@ -149,7 +167,8 @@ export function TestArtifactLookup() {
           </div>
         </div>
 
-        {/* Expandable Sections */}
+        {/* Expandable Sections - Only show when showFullPlan is true */}
+        {showFullPlan && (
         <div className="space-y-3">
           {/* Test Objectives */}
           <ExpandableSection
@@ -416,21 +435,165 @@ export function TestArtifactLookup() {
             </div>
           </ExpandableSection>
         </div>
+        )}
+      </motion.div>
+    </motion.div>
+  );
 
+  // Phase 1: Test Design Lookup (for showFullPlan=false case)
+  const renderPhase1TestDesign = (isCompleted: boolean) => (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="space-y-6"
+    >
+      <div className="flex items-center gap-2 mb-4">
+        {isCompleted ? (
+          <CheckCircle size={20} className="text-ordino-success" />
+        ) : (
+          <Search size={20} className="text-ordino-primary" />
+        )}
+        <span className="text-lg font-semibold text-ordino-text">
+          {isCompleted ? 'Test Design Lookup Complete' : 'Looking up test design...'}
+        </span>
+        {isCompleted && <Badge variant="success" size="sm">Complete</Badge>}
+      </div>
+
+      {!isCompleted && (
+        <div className="flex items-center gap-3 mb-6">
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+          >
+            <GitBranch size={24} className="text-ordino-primary" />
+          </motion.div>
+          <span className="text-sm text-ordino-text-muted">Searching for test design document...</span>
+        </div>
+      )}
+
+      {isCompleted && (
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1 }}
-          className="mt-4 p-3 bg-ordino-warning/10 rounded-lg border border-ordino-warning/20"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.2 }}
+          className="bg-ordino-bg rounded-xl border border-ordino-border p-6"
         >
-          <div className="flex items-center gap-2">
-            <AlertTriangle size={16} className="text-ordino-warning" />
-            <span className="text-sm text-ordino-text">
-              Test plan needs extension to cover new 2FA requirement
-            </span>
+          <div className="flex items-center gap-2 mb-4">
+            <GitBranch size={20} className="text-ordino-primary" />
+            <h3 className="text-lg font-semibold text-ordino-text">{testDesign.name}</h3>
+            <Badge variant="info" size="sm">v{testDesign.version}</Badge>
+          </div>
+          <p className="text-sm text-ordino-text-muted">
+            Found test design with {testDesign.paths.length} test paths covering authentication flows.
+          </p>
+        </motion.div>
+      )}
+    </motion.div>
+  );
+
+  // Phase 2: Requirement Lookup (for showFullPlan=false case)
+  const renderPhase2Requirement = (isCompleted: boolean) => (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="space-y-6"
+    >
+      <div className="flex items-center gap-2 mb-4">
+        {isCompleted ? (
+          <CheckCircle size={20} className="text-ordino-success" />
+        ) : (
+          <Search size={20} className="text-ordino-primary" />
+        )}
+        <span className="text-lg font-semibold text-ordino-text">
+          {isCompleted ? 'Requirement Lookup Complete' : 'Looking up requirements...'}
+        </span>
+        {isCompleted && <Badge variant="success" size="sm">Complete</Badge>}
+      </div>
+
+      {!isCompleted && (
+        <div className="flex items-center gap-3 mb-6">
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+          >
+            <FileText size={24} className="text-ordino-primary" />
+          </motion.div>
+          <span className="text-sm text-ordino-text-muted">Searching for requirement documents...</span>
+        </div>
+      )}
+
+      {isCompleted && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.2 }}
+          className="bg-ordino-bg rounded-xl border border-ordino-border p-6"
+        >
+          <div className="flex items-center gap-2 mb-4">
+            <FileText size={20} className="text-ordino-primary" />
+            <h3 className="text-lg font-semibold text-ordino-text">{sampleRequirement.title}</h3>
+            <Badge variant="primary" size="sm">{sampleRequirement.key}</Badge>
+          </div>
+          <p className="text-sm text-ordino-text-muted mb-2">{sampleRequirement.description.split('\n')[0]}</p>
+          <div className="flex items-center gap-2 mt-2">
+            <Badge variant={sampleRequirement.priority === 'High' ? 'error' : 'default'} size="sm">
+              {sampleRequirement.priority}
+            </Badge>
+            <span className="text-xs text-ordino-text-muted">Status: {sampleRequirement.status}</span>
           </div>
         </motion.div>
-      </motion.div>
+      )}
+    </motion.div>
+  );
+
+  // Phase 3: UI Design Lookup (for showFullPlan=false case)
+  const renderPhase3UIDesign = (isCompleted: boolean) => (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="space-y-6"
+    >
+      <div className="flex items-center gap-2 mb-4">
+        {isCompleted ? (
+          <CheckCircle size={20} className="text-ordino-success" />
+        ) : (
+          <Search size={20} className="text-ordino-primary" />
+        )}
+        <span className="text-lg font-semibold text-ordino-text">
+          {isCompleted ? 'UI Design Lookup Complete' : 'Looking up UI designs...'}
+        </span>
+        {isCompleted && <Badge variant="success" size="sm">Complete</Badge>}
+      </div>
+
+      {!isCompleted && (
+        <div className="flex items-center gap-3 mb-6">
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+          >
+            <File size={24} className="text-ordino-primary" />
+          </motion.div>
+          <span className="text-sm text-ordino-text-muted">Searching for UI design files...</span>
+        </div>
+      )}
+
+      {isCompleted && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.2 }}
+          className="bg-ordino-bg rounded-xl border border-ordino-border p-6"
+        >
+          <div className="flex items-center gap-2 mb-4">
+            <File size={20} className="text-ordino-primary" />
+            <h3 className="text-lg font-semibold text-ordino-text">Login Screen Mockup</h3>
+            <Badge variant="info" size="sm">Figma</Badge>
+          </div>
+          <p className="text-sm text-ordino-text-muted">
+            Found UI design files for authentication flow including 2FA setup screens and login interface.
+          </p>
+        </motion.div>
+      )}
     </motion.div>
   );
 
@@ -562,46 +725,19 @@ export function TestArtifactLookup() {
         {isCompleted && <Badge variant="success" size="sm">Complete</Badge>}
       </div>
 
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="p-4 bg-ordino-info/10 rounded-lg border border-ordino-info/20 mb-4"
-      >
-        <p className="text-sm text-ordino-text">
-          <strong>Assessment:</strong> New test design and test cases needed to cover authentication flow with 2FA
-        </p>
-      </motion.div>
-
-      <div className="grid grid-cols-3 gap-4">
+      <div className="flex justify-center">
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="bg-ordino-bg rounded-xl border border-ordino-border p-4 text-center"
-        >
-          <p className="text-2xl font-bold text-ordino-primary">1</p>
-          <p className="text-xs text-ordino-text-muted">Test Plan Update</p>
-        </motion.div>
-        <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.3 }}
-          className="bg-ordino-bg rounded-xl border border-ordino-border p-4 text-center"
+          className="bg-ordino-bg rounded-xl border border-ordino-border p-4 text-center w-64"
         >
           <p className="text-2xl font-bold text-ordino-warning">2</p>
           <p className="text-xs text-ordino-text-muted">Paths Affected</p>
         </motion.div>
-        <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.4 }}
-          className="bg-ordino-bg rounded-xl border border-ordino-border p-4 text-center"
-        >
-          <p className="text-2xl font-bold text-ordino-success">5</p>
-          <p className="text-xs text-ordino-text-muted">New Test Cases Needed</p>
-        </motion.div>
       </div>
 
+      {showFullPlan && (
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -613,16 +749,18 @@ export function TestArtifactLookup() {
           <span className="text-sm font-medium text-ordino-text">Ready for Test Design Drafting</span>
         </div>
         <p className="text-xs text-ordino-text-muted">
-          All existing artifacts analyzed. Proceeding to draft new test design with test cases.
+          All existing artifacts analyzed. Proceeding to draft test design paths and scenarios.
         </p>
       </motion.div>
+      )}
     </motion.div>
   );
 
   // Determine which phases should be visible
   const shouldShowPhase = (phaseIndex: number) => {
-    if (phaseIndex === 0) return true; // Always show phase 1
+    if (phaseIndex === 0) return true; // Always show phase 0
     if (phaseIndex === currentPhase) return true; // Show current active phase
+    if (completedPhases.has(phaseIndex)) return true; // Show if this phase is completed
     if (completedPhases.has(phaseIndex - 1)) return true; // Show if previous phase is completed
     return false;
   };
@@ -635,7 +773,9 @@ export function TestArtifactLookup() {
           <motion.div
             className="h-full bg-gradient-to-r from-ordino-primary to-ordino-secondary"
             initial={{ width: '0%' }}
-            animate={{ width: `${((currentPhase + phaseProgress / 100) / 4) * 100}%` }}
+            animate={{
+              width: `${((currentPhase + phaseProgress / 100) / 4) * 100}%`
+            }}
             transition={{ duration: 0.1 }}
           />
         </div>
@@ -656,31 +796,67 @@ export function TestArtifactLookup() {
           </div>
         )}
 
-        {/* Phase 2: Test Design Analysis */}
-        {shouldShowPhase(1) && (
-          <div>
-            {renderPhase2(completedPhases.has(1))}
-            {completedPhases.has(1) && currentPhase > 1 && (
-              <div className="my-6 border-t border-ordino-border"></div>
-            )}
-          </div>
+        {/* Phase 2: Conditional rendering based on showFullPlan */}
+        {showFullPlan ? (
+          /* Phase 2: Test Design Analysis - Only show when showFullPlan is true */
+          shouldShowPhase(1) && (
+            <div>
+              {renderPhase2(completedPhases.has(1))}
+              {completedPhases.has(1) && currentPhase > 1 && (
+                <div className="my-6 border-t border-ordino-border"></div>
+              )}
+            </div>
+          )
+        ) : (
+          /* Phase 1: Test Design Lookup - Only show when showFullPlan is false */
+          shouldShowPhase(1) && (
+            <div>
+              {renderPhase1TestDesign(completedPhases.has(1) || currentPhase > 1)}
+              {(completedPhases.has(1) || currentPhase > 1) && currentPhase > 1 && (
+                <div className="my-6 border-t border-ordino-border"></div>
+              )}
+            </div>
+          )
         )}
 
-        {/* Phase 3: Test Case Discovery */}
-        {shouldShowPhase(2) && (
-          <div>
-            {renderPhase3(completedPhases.has(2))}
-            {completedPhases.has(2) && currentPhase > 2 && (
-              <div className="my-6 border-t border-ordino-border"></div>
-            )}
-          </div>
+        {/* Phase 3: Conditional rendering based on showFullPlan */}
+        {showFullPlan ? (
+          /* Phase 3: Test Case Discovery - Only show when showFullPlan is true */
+          shouldShowPhase(2) && (
+            <div>
+              {renderPhase3(completedPhases.has(2))}
+              {completedPhases.has(2) && currentPhase > 2 && (
+                <div className="my-6 border-t border-ordino-border"></div>
+              )}
+            </div>
+          )
+        ) : (
+          /* Phase 2: Requirement Lookup - Only show when showFullPlan is false */
+          shouldShowPhase(2) && (
+            <div>
+              {renderPhase2Requirement(completedPhases.has(2))}
+              {completedPhases.has(2) && currentPhase > 2 && (
+                <div className="my-6 border-t border-ordino-border"></div>
+              )}
+            </div>
+          )
         )}
 
-        {/* Phase 4: Gap Analysis */}
-        {shouldShowPhase(3) && (
-          <div>
-            {renderPhase4(completedPhases.has(3))}
-          </div>
+        {/* Phase 4: Conditional rendering based on showFullPlan */}
+        {showFullPlan ? (
+          /* Phase 4: Gap Analysis - Only show when showFullPlan is true */
+          shouldShowPhase(3) && (
+            <div>
+              {renderPhase4(completedPhases.has(3))}
+            </div>
+          )
+        ) : (
+          /* Phase 3: UI Design Lookup - Only show when showFullPlan is false */
+          shouldShowPhase(3) && (
+            <div>
+              {renderPhase3UIDesign(completedPhases.has(3) || currentPhase > 3)}
+            </div>
+          )
         )}
       </div>
     </div>

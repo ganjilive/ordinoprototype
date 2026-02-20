@@ -231,40 +231,21 @@ export function OrdinoThinking() {
             </div>
           </motion.div>
 
-          <div className="grid grid-cols-2 gap-4">
-            {/* Testability Level */}
-            <motion.div
-              initial={{ x: -20, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ delay: 0.3 }}
-              className="bg-ordino-bg rounded-xl border border-ordino-border p-4"
-            >
-              <div className="flex items-center gap-2 mb-2">
-                <CheckCircle size={16} className={getTestabilityColor(triageAnalysis.testabilityLevel)} />
-                <h4 className="font-semibold text-ordino-text text-sm">Testability</h4>
-              </div>
-              <p className={`text-xl font-bold ${getTestabilityColor(triageAnalysis.testabilityLevel)}`}>
-                {triageAnalysis.testabilityLevel}
-              </p>
-            </motion.div>
-
-            {/* Estimated Effort */}
-            <motion.div
-              initial={{ x: 20, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ delay: 0.3 }}
-              className="bg-ordino-bg rounded-xl border border-ordino-border p-4"
-            >
-              <div className="flex items-center gap-2 mb-1">
-                <Clock size={16} className="text-ordino-primary" />
-                <h4 className="font-semibold text-ordino-text text-sm">Testing Effort</h4>
-              </div>
-              <p className="text-xs text-ordino-text-muted mb-1">without automation</p>
-              <p className="text-xl font-bold text-ordino-text">
-                {triageAnalysis.estimatedTestingEffort}
-              </p>
-            </motion.div>
-          </div>
+          {/* Testability Level */}
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="bg-ordino-bg rounded-xl border border-ordino-border p-4"
+          >
+            <div className="flex items-center gap-2 mb-2">
+              <CheckCircle size={16} className={getTestabilityColor(triageAnalysis.testabilityLevel)} />
+              <h4 className="font-semibold text-ordino-text text-sm">Testability</h4>
+            </div>
+            <p className={`text-xl font-bold ${getTestabilityColor(triageAnalysis.testabilityLevel)}`}>
+              {triageAnalysis.testabilityLevel}
+            </p>
+          </motion.div>
 
           {/* Identified Gaps */}
           {triageAnalysis.gaps.length > 0 && (
@@ -343,6 +324,28 @@ export function OrdinoThinking() {
             <p className="text-sm text-ordino-text-muted">
               {triageAnalysis.recommendedApproach}
             </p>
+          </motion.div>
+
+          {/* Next Step Hint */}
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.7 }}
+            className="bg-ordino-secondary/10 rounded-xl border border-ordino-secondary/20 p-4"
+          >
+            <div className="flex items-center gap-3">
+              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-ordino-secondary/20 flex items-center justify-center">
+                <svg className="w-4 h-4 text-ordino-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                </svg>
+              </div>
+              <div className="flex-1">
+                <h4 className="font-semibold text-ordino-text text-sm mb-1">Next Step</h4>
+                <p className="text-sm text-ordino-text-muted">
+                  Ordino wants to collaborate with the BA and QA Lead to refine the requirement and address the identified gaps.
+                </p>
+              </div>
+            </div>
           </motion.div>
         </motion.div>
       )}
