@@ -18,6 +18,7 @@ const VSCodeDemo = lazy(() => import('./pages/VSCodeDemo').then(m => ({ default:
 const AutoHealingTests = lazy(() => import('./pages/AutoHealingTests').then(m => ({ default: m.AutoHealingTests })));
 const TestDesign = lazy(() => import('./pages/TestDesign').then(m => ({ default: m.TestDesign })));
 const RequirementAnalysis = lazy(() => import('./pages/RequirementAnalysis').then(m => ({ default: m.RequirementAnalysis })));
+const AutomationScriptGeneration = lazy(() => import('./pages/AutomationScriptGeneration').then(m => ({ default: m.AutomationScriptGeneration })));
 
 // Loading fallback
 function PageLoader() {
@@ -153,6 +154,14 @@ function App() {
             element={
               <Suspense fallback={<PageLoader />}>
                 <RequirementAnalysis />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/automation-script-generation"
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <AutomationScriptGeneration />
               </Suspense>
             }
           />
