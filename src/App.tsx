@@ -17,6 +17,7 @@ const JiraDemo = lazy(() => import('./pages/JiraDemo').then(m => ({ default: m.J
 const VSCodeDemo = lazy(() => import('./pages/VSCodeDemo').then(m => ({ default: m.VSCodeDemo })));
 const AutoHealingTests = lazy(() => import('./pages/AutoHealingTests').then(m => ({ default: m.AutoHealingTests })));
 const TestDesign = lazy(() => import('./pages/TestDesign').then(m => ({ default: m.TestDesign })));
+const RequirementAnalysis = lazy(() => import('./pages/RequirementAnalysis').then(m => ({ default: m.RequirementAnalysis })));
 
 // Loading fallback
 function PageLoader() {
@@ -144,6 +145,14 @@ function App() {
             element={
               <Suspense fallback={<PageLoader />}>
                 <TestDesign />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/requirement-analysis"
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <RequirementAnalysis />
               </Suspense>
             }
           />
