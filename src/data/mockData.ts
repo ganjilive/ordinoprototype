@@ -84,14 +84,16 @@ export const activities: Activity[] = [
   },
 ];
 
-// Connected Tools
+// Connected Tools (with categories for Settings page grouping)
 export const connectedTools: ConnectedTool[] = [
+  // Development & issue tracking
   {
     id: '1',
     name: 'Jira',
     icon: 'jira',
     status: 'connected',
     lastSync: new Date(Date.now() - 5 * 60 * 1000),
+    category: 'development',
   },
   {
     id: '2',
@@ -99,27 +101,138 @@ export const connectedTools: ConnectedTool[] = [
     icon: 'github',
     status: 'connected',
     lastSync: new Date(Date.now() - 2 * 60 * 1000),
+    category: 'development',
   },
-  {
-    id: '3',
-    name: 'Figma',
-    icon: 'figma',
-    status: 'syncing',
-    lastSync: new Date(Date.now() - 30 * 60 * 1000),
-  },
+  // Test management
   {
     id: '4',
     name: 'TestRail',
     icon: 'testrail',
     status: 'connected',
     lastSync: new Date(Date.now() - 10 * 60 * 1000),
+    category: 'test-management',
   },
+  {
+    id: '13',
+    name: 'Testmo',
+    icon: 'testmo',
+    status: 'connected',
+    lastSync: new Date(Date.now() - 15 * 60 * 1000),
+    category: 'test-management',
+  },
+  {
+    id: '14',
+    name: 'Zephyr Scale',
+    icon: 'zephyr',
+    status: 'connected',
+    lastSync: new Date(Date.now() - 8 * 60 * 1000),
+    category: 'test-management',
+  },
+  // CI/CD & communication
   {
     id: '5',
     name: 'Slack',
     icon: 'slack',
     status: 'connected',
     lastSync: new Date(Date.now() - 1 * 60 * 1000),
+    category: 'cicd-communication',
+  },
+  {
+    id: '15',
+    name: 'Jenkins',
+    icon: 'jenkins',
+    status: 'disconnected',
+    category: 'cicd-communication',
+  },
+  {
+    id: '16',
+    name: 'VS Code Extension',
+    icon: 'vscode',
+    status: 'connected',
+    lastSync: new Date(Date.now() - 3 * 60 * 1000),
+    category: 'cicd-communication',
+  },
+  // Design
+  {
+    id: '3',
+    name: 'Figma',
+    icon: 'figma',
+    status: 'connected',
+    lastSync: new Date(Date.now() - 20 * 60 * 1000),
+    category: 'design',
+  },
+  {
+    id: '12',
+    name: 'Lucid',
+    icon: 'lucid',
+    status: 'connected',
+    lastSync: new Date(Date.now() - 12 * 60 * 1000),
+    category: 'design',
+  },
+  // Collaboration & docs
+  {
+    id: '6',
+    name: 'Confluence',
+    icon: 'confluence',
+    status: 'connected',
+    lastSync: new Date(Date.now() - 7 * 60 * 1000),
+    category: 'collaboration',
+  },
+  {
+    id: '7',
+    name: 'Microsoft Teams',
+    icon: 'teams',
+    status: 'connected',
+    lastSync: new Date(Date.now() - 4 * 60 * 1000),
+    category: 'collaboration',
+  },
+  {
+    id: '8',
+    name: 'Sharepoint',
+    icon: 'sharepoint',
+    status: 'connected',
+    lastSync: new Date(Date.now() - 6 * 60 * 1000),
+    category: 'collaboration',
+  },
+  {
+    id: '11',
+    name: 'Mural',
+    icon: 'mural',
+    status: 'connected',
+    lastSync: new Date(Date.now() - 9 * 60 * 1000),
+    category: 'collaboration',
+  },
+  {
+    id: '12-collab',
+    name: 'Lucid',
+    icon: 'lucid',
+    status: 'connected',
+    lastSync: new Date(Date.now() - 11 * 60 * 1000),
+    category: 'collaboration',
+  },
+  // Test automation & accessibility
+  {
+    id: '17',
+    name: 'Selenium IDE',
+    icon: 'selenium',
+    status: 'connected',
+    lastSync: new Date(Date.now() - 14 * 60 * 1000),
+    category: 'test-automation',
+  },
+  {
+    id: '22',
+    name: 'testRigor',
+    icon: 'testrigor',
+    status: 'connected',
+    lastSync: new Date(Date.now() - 13 * 60 * 1000),
+    category: 'test-automation',
+  },
+  {
+    id: '20',
+    name: 'Cypress',
+    icon: 'cypress',
+    status: 'disconnected',
+    category: 'test-automation',
   },
 ];
 

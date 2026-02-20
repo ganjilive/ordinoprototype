@@ -8,9 +8,10 @@ interface IntegrationCardProps {
   tool: ConnectedTool;
   onConnect?: () => void;
   onDisconnect?: () => void;
+  compact?: boolean;
 }
 
-const toolConfigs: Record<string, { fields: string[]; description: string }> = {
+export const toolConfigs: Record<string, { fields: string[]; description: string }> = {
   Jira: {
     fields: ['API URL', 'API Token', 'Project Key'],
     description: 'Connect to Jira to automatically detect requirements and sync test cases.',
@@ -31,14 +32,85 @@ const toolConfigs: Record<string, { fields: string[]; description: string }> = {
     fields: ['Workspace', 'Bot Token', 'Default Channel'],
     description: 'Connect to Slack to send notifications to your team.',
   },
+  Confluence: {
+    fields: ['Base URL', 'API Token', 'Space Key'],
+    description: 'Connect to Confluence to sync requirements and test documentation.',
+  },
+  'Microsoft Teams': {
+    fields: ['Tenant ID', 'Bot ID', 'Bot Secret'],
+    description: 'Connect to Microsoft Teams to send test alerts and reports.',
+  },
+  Sharepoint: {
+    fields: ['Site URL', 'Client ID', 'Client Secret'],
+    description: 'Connect to SharePoint to sync test artifacts and reports.',
+  },
+  Notion: {
+    fields: ['Integration Token', 'Database ID'],
+    description: 'Connect to Notion to sync test plans and documentation.',
+  },
+  'Monday.com': {
+    fields: ['API Token', 'Board ID'],
+    description: 'Connect to Monday.com to track test execution and defects.',
+  },
+  Mural: {
+    fields: ['API Token', 'Workspace ID'],
+    description: 'Connect to Mural to link test scenarios to collaboration boards.',
+  },
+  Lucid: {
+    fields: ['API Key', 'API Secret'],
+    description: 'Connect to Lucid to sync diagrams and test flow documentation.',
+  },
+  Testmo: {
+    fields: ['Server URL', 'API Token', 'Project ID'],
+    description: 'Connect to Testmo to sync test cases and execution results.',
+  },
+  'Zephyr Scale': {
+    fields: ['Jira URL', 'API Token', 'Project Key'],
+    description: 'Connect to Zephyr Scale to sync test cycles and results.',
+  },
+  Jenkins: {
+    fields: ['Jenkins URL', 'Username', 'API Token'],
+    description: 'Connect to Jenkins to trigger test runs and sync build status.',
+  },
+  'VS Code Extension': {
+    fields: ['Ordino API Key', 'Workspace ID'],
+    description: 'Connect the VS Code extension to sync coverage and run tests from the editor.',
+  },
+  'Selenium IDE': {
+    fields: ['Export Path', 'Project Key'],
+    description: 'Connect Selenium IDE to import and run recorded tests with Ordino.',
+  },
+  Deque: {
+    fields: ['API URL', 'API Key'],
+    description: 'Connect to Deque to sync accessibility test results and axe reports.',
+  },
+  Cucumber: {
+    fields: ['Features Path', 'Project ID'],
+    description: 'Connect Cucumber to sync Gherkin scenarios and step definitions.',
+  },
+  Cypress: {
+    fields: ['Project ID', 'Record Key'],
+    description: 'Connect Cypress to sync test runs and dashboard results.',
+  },
+  Zelenium: {
+    fields: ['API URL', 'API Key'],
+    description: 'Connect Zelenium to sync Selenium-based test execution data.',
+  },
+  testRigor: {
+    fields: ['API URL', 'API Token'],
+    description: 'Connect testRigor to sync end-to-end test results and coverage.',
+  },
 };
 
-export function IntegrationCard({ tool, onConnect, onDisconnect }: IntegrationCardProps) {
+export function IntegrationCard({ tool, onConnect, onDisconnect, compact }: IntegrationCardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isTesting, setIsTesting] = useState(false);
   const [testResult, setTestResult] = useState<'success' | 'error' | null>(null);
 
-  const config = toolConfigs[tool.name] || { fields: [], description: '' };
+  const config = toolConfigs[tool.name] ?? {
+    fields: ['API URL', 'API Key'],
+    description: `Connect to ${tool.name}.`,
+  };
 
   const handleTestConnection = () => {
     setIsTesting(true);
@@ -66,20 +138,21 @@ export function IntegrationCard({ tool, onConnect, onDisconnect }: IntegrationCa
           'bg-ordino-text-muted'
         }`} />
 
-        <div className="pt-2">
-          <div className="flex items-start justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-ordino-bg flex items-center justify-center text-ordino-text font-bold text-lg">
+        <div className={compact ? 'pt-1.5 pb-1.5 px-2' : 'pt-2'}>
+          <div className={`flex items-start justify-between ${compact ? 'mb-2' : 'mb-4'}`}>
+            <div className="flex items-center gap-2">
+              <div className={`${compact ? 'w-8 h-8' : 'w-12 h-12'} rounded-lg bg-ordino-bg flex items-center justify-center text-ordino-text font-bold ${compact ? 'text-sm' : 'text-lg'}`}>
                 {tool.name.charAt(0)}
               </div>
-              <div>
-                <h3 className="font-semibold text-ordino-text">{tool.name}</h3>
+              <div className="flex-1 min-w-0">
+                <h3 className={`font-semibold text-ordino-text ${compact ? 'text-xs truncate' : ''}`}>{tool.name}</h3>
                 <Badge
                   variant={
                     tool.status === 'connected' ? 'success' :
                     tool.status === 'syncing' ? 'warning' : 'default'
                   }
                   size="sm"
+                  className={compact ? '!text-[10px] !px-1.5 !py-0' : ''}
                 >
                   {tool.status === 'connected' ? 'Connected' :
                    tool.status === 'syncing' ? 'Syncing...' : 'Not Connected'}
@@ -88,28 +161,30 @@ export function IntegrationCard({ tool, onConnect, onDisconnect }: IntegrationCa
             </div>
             <button
               onClick={() => setIsModalOpen(true)}
-              className="p-2 rounded-lg text-ordino-text-muted hover:text-ordino-text hover:bg-ordino-bg transition-colors"
+              className={`rounded-lg text-ordino-text-muted hover:text-ordino-text hover:bg-ordino-bg transition-colors ${compact ? 'p-1' : 'p-2'}`}
             >
-              <Settings size={18} />
+              <Settings size={compact ? 14 : 18} />
             </button>
           </div>
 
-          <p className="text-sm text-ordino-text-muted mb-4">
-            {config.description}
-          </p>
+          {!compact && (
+            <p className="text-sm text-ordino-text-muted mb-4">
+              {config.description}
+            </p>
+          )}
 
           {tool.status === 'connected' ? (
-            <div className="flex items-center justify-between">
-              <span className="text-xs text-ordino-text-muted">
-                Last sync: {tool.lastSync ? new Date(tool.lastSync).toLocaleString() : 'Never'}
+            <div className={`flex items-center justify-between ${compact ? 'mt-1.5' : ''}`}>
+              <span className={`text-ordino-text-muted ${compact ? 'text-[10px] truncate flex-1 mr-2' : 'text-xs'}`}>
+                {compact ? (tool.lastSync ? 'Synced' : 'Never') : (tool.lastSync ? `Last sync: ${new Date(tool.lastSync).toLocaleString()}` : 'Never')}
               </span>
-              <Button variant="ghost" size="sm" onClick={onDisconnect}>
+              <Button variant="ghost" size={compact ? 'sm' : 'sm'} onClick={onDisconnect} className={compact ? 'text-[10px] px-2 py-0.5' : ''}>
                 Disconnect
               </Button>
             </div>
           ) : (
-            <Button onClick={() => setIsModalOpen(true)} className="w-full">
-              Connect {tool.name}
+            <Button onClick={() => setIsModalOpen(true)} className={`w-full ${compact ? 'text-xs py-1.5' : ''}`} size={compact ? 'sm' : 'md'}>
+              Connect {compact ? '' : tool.name}
             </Button>
           )}
         </div>

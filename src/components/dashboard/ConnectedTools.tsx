@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
-import { RefreshCw } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { RefreshCw, Settings } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent } from '../common';
 import { formatRelativeTime, cn } from '../../utils/helpers';
 import type { ConnectedTool } from '../../types';
@@ -21,15 +22,21 @@ const statusText = {
 };
 
 export function ConnectedTools({ tools }: ConnectedToolsProps) {
+  const activeTools = tools.filter((t) => t.status === 'connected' || t.status === 'syncing');
+  const displayTools = activeTools.slice(0, 8);
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
         <CardTitle>Connected Tools</CardTitle>
-        <span className="text-xs text-ordino-text-muted">{tools.filter(t => t.status === 'connected').length}/{tools.length} active</span>
+        <span className="text-xs text-ordino-text-muted">{activeTools.length}/{tools.length} active</span>
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-1 gap-3">
-          {tools.map((tool, index) => (
+          {displayTools.length === 0 ? (
+            <p className="text-sm text-ordino-text-muted py-2">No active integrations. Connect tools in Settings.</p>
+          ) : (
+            displayTools.map((tool, index) => (
             <motion.div
               key={tool.id}
               initial={{ opacity: 0, y: 10 }}
@@ -73,8 +80,16 @@ export function ConnectedTools({ tools }: ConnectedToolsProps) {
                 </div>
               </div>
             </motion.div>
-          ))}
+          ))
+          )}
         </div>
+        <Link
+          to="/settings"
+          className="mt-3 flex items-center justify-center gap-2 text-sm text-ordino-secondary hover:text-ordino-primary transition-colors"
+        >
+          <Settings size={14} />
+          View all in Settings
+        </Link>
       </CardContent>
     </Card>
   );

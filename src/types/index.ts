@@ -26,6 +26,7 @@ export interface ConnectedTool {
   icon: string;
   status: 'connected' | 'disconnected' | 'syncing';
   lastSync?: Date;
+  category?: string;
 }
 
 // Workflow types

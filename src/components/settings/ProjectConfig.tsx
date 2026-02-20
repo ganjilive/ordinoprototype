@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Save, RotateCcw } from 'lucide-react';
-import { Card, CardHeader, CardTitle, CardContent, Button, Badge } from '../common';
+import { Save, RotateCcw, Users, X, Plus } from 'lucide-react';
+import { Card, CardHeader, CardTitle, CardContent, Button, Badge, Modal } from '../common';
 
 interface ProjectSettings {
   projectName: string;
+  team: string;
   coverageThreshold: number;
   passRateThreshold: number;
   automationThreshold: number;
@@ -14,6 +15,7 @@ interface ProjectSettings {
 
 const defaultSettings: ProjectSettings = {
   projectName: 'Ordino Demo Project',
+  team: 'User Onboarding Team',
   coverageThreshold: 80,
   passRateThreshold: 95,
   automationThreshold: 70,
@@ -21,9 +23,24 @@ const defaultSettings: ProjectSettings = {
   notifyOnGaps: true,
 };
 
+interface TeamMember {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+}
+
+const mockTeamMembers: TeamMember[] = [
+  { id: '1', name: 'Sarah Chen', email: 'sarah.chen@example.com', role: 'QA Lead' },
+  { id: '2', name: 'Michael Rodriguez', email: 'michael.r@example.com', role: 'QA Engineer' },
+  { id: '3', name: 'Emily Johnson', email: 'emily.j@example.com', role: 'QA Engineer' },
+];
+
 export function ProjectConfig() {
   const [settings, setSettings] = useState<ProjectSettings>(defaultSettings);
   const [isSaved, setIsSaved] = useState(false);
+  const [isManageMembersOpen, setIsManageMembersOpen] = useState(false);
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>(mockTeamMembers);
 
   const handleSave = () => {
     setIsSaved(true);
@@ -32,6 +49,10 @@ export function ProjectConfig() {
 
   const handleReset = () => {
     setSettings(defaultSettings);
+  };
+
+  const handleRemoveMember = (id: string) => {
+    setTeamMembers(teamMembers.filter((m) => m.id !== id));
   };
 
   return (
@@ -53,6 +74,29 @@ export function ProjectConfig() {
               onChange={(e) => setSettings({ ...settings, projectName: e.target.value })}
               className="w-full px-3 py-2 bg-ordino-bg border border-ordino-border rounded-lg text-sm text-ordino-text focus:outline-none focus:border-ordino-primary transition-colors"
             />
+          </div>
+
+          {/* Team */}
+          <div>
+            <label className="block text-sm font-medium text-ordino-text mb-2">
+              Team
+            </label>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={settings.team}
+                onChange={(e) => setSettings({ ...settings, team: e.target.value })}
+                className="flex-1 px-3 py-2 bg-ordino-bg border border-ordino-border rounded-lg text-sm text-ordino-text focus:outline-none focus:border-ordino-primary transition-colors"
+              />
+              <Button
+                variant="secondary"
+                onClick={() => setIsManageMembersOpen(true)}
+                className="shrink-0"
+              >
+                <Users size={16} className="mr-1.5" />
+                Manage Members
+              </Button>
+            </div>
           </div>
 
           {/* Thresholds */}
@@ -166,6 +210,54 @@ export function ProjectConfig() {
           </div>
         </div>
       </CardContent>
+
+      {/* Manage Members Modal */}
+      <Modal
+        isOpen={isManageMembersOpen}
+        onClose={() => setIsManageMembersOpen(false)}
+        title="Manage Team Members"
+        size="lg"
+      >
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <p className="text-sm text-ordino-text-muted">
+              {teamMembers.length} member{teamMembers.length !== 1 ? 's' : ''} in {settings.team}
+            </p>
+            <Button size="sm">
+              <Plus size={16} className="mr-1.5" />
+              Add Member
+            </Button>
+          </div>
+
+          <div className="space-y-2 max-h-[50vh] overflow-y-auto pr-2">
+            {teamMembers.map((member) => (
+              <div
+                key={member.id}
+                className="flex items-center justify-between p-3 rounded-lg bg-ordino-bg border border-ordino-border hover:border-ordino-border/80 transition-colors"
+              >
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-ordino-text">{member.name}</p>
+                  <p className="text-xs text-ordino-text-muted">{member.email}</p>
+                  <p className="text-xs text-ordino-text-muted mt-0.5">{member.role}</p>
+                </div>
+                <button
+                  onClick={() => handleRemoveMember(member.id)}
+                  className="p-1.5 rounded text-ordino-text-muted hover:text-ordino-error hover:bg-ordino-error/10 transition-colors"
+                  aria-label={`Remove ${member.name}`}
+                >
+                  <X size={16} />
+                </button>
+              </div>
+            ))}
+          </div>
+
+          {teamMembers.length === 0 && (
+            <p className="text-sm text-ordino-text-muted text-center py-4">
+              No team members yet. Click "Add Member" to get started.
+            </p>
+          )}
+        </div>
+      </Modal>
     </Card>
   );
 }
