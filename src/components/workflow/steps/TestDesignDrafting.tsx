@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { AlertCircle, CheckCircle, GitBranch } from 'lucide-react';
+import { CheckCircle, GitBranch } from 'lucide-react';
 import { Badge } from '../../common';
 import { testDesign } from '../../../data/mockData';
 
 export function TestDesignDrafting() {
-  const [currentPhase, setCurrentPhase] = useState(0);
+  const [currentPhase] = useState(0);
   const [phaseProgress, setPhaseProgress] = useState(0);
   const [completedPhases, setCompletedPhases] = useState<Set<number>>(new Set());
 

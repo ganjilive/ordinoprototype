@@ -14,6 +14,9 @@ import {
   PenTool,
   ListChecks,
   BarChart3,
+  Hash,
+  Users2,
+  Bug,
 } from 'lucide-react';
 import { Logo } from '../common';
 import { cn } from '../../utils/helpers';
@@ -36,13 +39,12 @@ const workflowNavItems = [
   { to: '/auto-healing-tests', icon: Wrench, label: 'Auto Heal' },
 ];
 
-// Platform demos temporarily disabled during navigation reorganization
-// const platformNavItems = [
-//   { to: '/slack', icon: Hash, label: 'Slack Demo' },
-//   { to: '/teams', icon: Users2, label: 'Teams Demo' },
-//   { to: '/jira', icon: Bug, label: 'Jira Demo' },
-//   { to: '/vscode', icon: Code2, label: 'VS Code Demo' },
-// ];
+const platformNavItems = [
+  { to: '/slack', icon: Hash, label: 'Slack' },
+  { to: '/teams', icon: Users2, label: 'Teams' },
+  { to: '/jira', icon: Bug, label: 'Jira' },
+  { to: '/vscode', icon: Code2, label: 'VS Code' },
+];
 
 const bottomNavItems = [
   { to: '/history', icon: History, label: 'History' },
@@ -81,6 +83,27 @@ export function Sidebar({ onChatToggle, isChatOpen }: SidebarProps) {
             <span className="font-medium text-sm">{label}</span>
           </NavLink>
         ))}
+
+        {/* Integration Section */}
+        <div className="pt-2 border-t border-ordino-border mt-2">
+          {platformNavItems.map(({ to, icon: Icon, label }) => (
+            <NavLink
+              key={to}
+              to={to}
+              className={({ isActive }) =>
+                cn(
+                  'flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all mt-1',
+                  isActive
+                    ? 'bg-ordino-primary/20 text-ordino-primary border border-ordino-primary/30'
+                    : 'text-ordino-text-muted hover:text-ordino-text hover:bg-ordino-card-hover'
+                )
+              }
+            >
+              <Icon size={18} />
+              <span className="font-medium text-sm">{label}</span>
+            </NavLink>
+          ))}
+        </div>
 
         <div className="pt-2 border-t border-ordino-border mt-2">
           {bottomNavItems.map(({ to, icon: Icon, label }) => (

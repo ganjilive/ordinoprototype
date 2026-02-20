@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Brain, Sparkles, Search, FileText, CheckCircle, AlertCircle, Clock, Shield, ListChecks } from 'lucide-react';
+import { Brain, Sparkles, Search, FileText, CheckCircle, AlertCircle, Shield, ListChecks } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Badge } from '../../common';
 import { triageAnalysis } from '../../../data/mockData';

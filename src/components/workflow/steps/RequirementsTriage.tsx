@@ -164,20 +164,25 @@ export function RequirementsTriage() {
             <h4 className="font-semibold text-ordino-text">Dependencies</h4>
           </div>
           <div className="space-y-2">
-            {triageAnalysis.dependencies.map((dep) => (
-              <div
-                key={dep.id}
-                className="flex items-center justify-between p-3 bg-ordino-card rounded-lg"
-              >
-                <span className="text-sm text-ordino-text">{dep.name}</span>
-                <Badge
-                  variant={dep.status === 'Available' ? 'success' : dep.status === 'In Progress' ? 'warning' : 'error'}
-                  size="sm"
+            {triageAnalysis.dependencies.map((dep) => {
+              const status = dep.status as 'Available' | 'In Progress' | 'Unknown';
+              return (
+                <div
+                  key={dep.id}
+                  className="flex items-center justify-between p-3 bg-ordino-card rounded-lg"
                 >
-                  {dep.status}
-                </Badge>
-              </div>
-            ))}
+                  <span className="text-sm text-ordino-text">{dep.name}</span>
+                  <Badge
+                    variant={
+                      status === 'Available' ? 'success' : status === 'In Progress' ? 'warning' : status === 'Unknown' ? 'default' : 'error'
+                    }
+                    size="sm"
+                  >
+                    {dep.status}
+                  </Badge>
+                </div>
+              );
+            })}
           </div>
         </motion.div>
       )}

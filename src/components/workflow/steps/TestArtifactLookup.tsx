@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FileText, Search, CheckCircle, AlertTriangle, FileSpreadsheet as FileExcel, File, GitBranch, Database, FlaskConical, ChevronDown, ChevronUp, Target, List, BookOpen, CheckCircle2, XCircle, AlertCircle, Info } from 'lucide-react';
+import { FileText, Search, CheckCircle, FileSpreadsheet as FileExcel, File, GitBranch, Database, FlaskConical, ChevronDown, ChevronUp, Target, List, BookOpen, CheckCircle2, XCircle, AlertCircle, Info } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { Badge } from '../../common';
 import { testPlan, testDesign, existingTestCases, sampleRequirement } from '../../../data/mockData';
@@ -58,6 +58,11 @@ export function TestArtifactLookup({ showFullPlan = true }: TestArtifactLookupPr
   const [phaseProgress, setPhaseProgress] = useState(0);
   const [completedPhases, setCompletedPhases] = useState<Set<number>>(new Set());
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['summary']));
+  const currentPhaseRef = useRef(0);
+
+  useEffect(() => {
+    currentPhaseRef.current = currentPhase;
+  }, [currentPhase]);
 
   useEffect(() => {
     const progressInterval = setInterval(() => {
@@ -66,6 +71,7 @@ export function TestArtifactLookup({ showFullPlan = true }: TestArtifactLookupPr
           // If showFullPlan is false, do 4 phases (0-3): Test Plan, Test Design, Requirement, UI Design
           // If showFullPlan is true, do 4 phases (0-3): Test Plan, Test Design Analysis, Test Case Discovery, Gap Analysis
           const maxPhase = 3;
+          const currentPhaseValue = currentPhaseRef.current;
 
           setCurrentPhase((prevPhase) => {
             if (prevPhase < maxPhase) {
@@ -86,7 +92,8 @@ export function TestArtifactLookup({ showFullPlan = true }: TestArtifactLookupPr
               return prevPhase;
             }
           });
-          return 0;
+          // If we're at the final phase, keep progress at 100% instead of resetting to 0
+          return currentPhaseValue >= maxPhase ? 100 : 0;
         }
         return prevProgress + 2;
       });

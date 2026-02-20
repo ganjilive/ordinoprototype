@@ -5,7 +5,6 @@ import { TestPlanTimeline } from './TestPlanTimeline';
 import { useTestPlanWorkflow } from '../../hooks/useTestPlanWorkflow';
 import { TestArtifactLookup } from './steps/TestArtifactLookup';
 import { TestPlanCollaboration, TestPlanRefinement, TestPlanApproval } from './steps/testplan';
-import { OrdinoThinking } from './steps/OrdinoThinking';
 
 const stepDescriptions = [
   '',
