@@ -15,6 +15,7 @@ const SlackDemo = lazy(() => import('./pages/SlackDemo').then(m => ({ default: m
 const TeamsDemo = lazy(() => import('./pages/TeamsDemo').then(m => ({ default: m.TeamsDemo })));
 const JiraDemo = lazy(() => import('./pages/JiraDemo').then(m => ({ default: m.JiraDemo })));
 const VSCodeDemo = lazy(() => import('./pages/VSCodeDemo').then(m => ({ default: m.VSCodeDemo })));
+const AutoHealingTests = lazy(() => import('./pages/AutoHealingTests').then(m => ({ default: m.AutoHealingTests })));
 
 // Loading fallback
 function PageLoader() {
@@ -126,6 +127,14 @@ function App() {
             element={
               <Suspense fallback={<PageLoader />}>
                 <VSCodeDemo />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/auto-healing-tests"
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <AutoHealingTests />
               </Suspense>
             }
           />
