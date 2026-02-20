@@ -20,6 +20,7 @@ const TestDesign = lazy(() => import('./pages/TestDesign').then(m => ({ default:
 const RequirementAnalysis = lazy(() => import('./pages/RequirementAnalysis').then(m => ({ default: m.RequirementAnalysis })));
 const AutomationScriptGeneration = lazy(() => import('./pages/AutomationScriptGeneration').then(m => ({ default: m.AutomationScriptGeneration })));
 const TestPlan = lazy(() => import('./pages/TestPlan').then(m => ({ default: m.TestPlan })));
+const RootCauseAnalysis = lazy(() => import('./pages/RootCauseAnalysis').then(m => ({ default: m.RootCauseAnalysis })));
 
 // Loading fallback
 function PageLoader() {
@@ -171,6 +172,14 @@ function App() {
             element={
               <Suspense fallback={<PageLoader />}>
                 <TestPlan />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/root-cause-analysis"
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <RootCauseAnalysis />
               </Suspense>
             }
           />

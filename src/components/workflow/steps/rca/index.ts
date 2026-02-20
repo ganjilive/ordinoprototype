@@ -5,3 +5,4 @@ export { RootCauseIdentified } from './RootCauseIdentified';
 export { HumanCollaborationRequest } from './HumanCollaborationRequest';
 export { HumanInputCompletion } from './HumanInputCompletion';
 export { RCAReportNotification } from './RCAReportNotification';
+export { RCAApproval } from './RCAApproval';

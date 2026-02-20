@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { Check } from 'lucide-react';
 import { cn } from '../../utils/helpers';
-import type { RCAStepStatus } from '../../hooks/useRCADemo';
+import type { RCAStepStatus } from '../../hooks/useRCAWorkflow';
 
 interface RCATimelineProps {
   steps: { id: number; status: RCAStepStatus }[];
@@ -9,13 +9,10 @@ interface RCATimelineProps {
 }
 
 const stepTitles = [
-  'Build Pipeline Trigger',
-  'Failure Pattern Detection',
-  'Automated RCA Analysis',
-  'Root Cause Identified',
-  'Human Collaboration',
-  'RCA Completion',
-  'Report & Notification',
+  'Detect Patterns',
+  'Investigate',
+  'Root Cause Found',
+  'Review & Approve',
 ];
 
 export function RCATimeline({ steps, currentStep }: RCATimelineProps) {
@@ -25,10 +22,10 @@ export function RCATimeline({ steps, currentStep }: RCATimelineProps) {
         RCA Progress
       </h3>
       <div className="relative">
-        {/* Vertical line */}
+        {/* Vertical background line */}
         <div className="absolute left-4 top-4 bottom-4 w-0.5 bg-ordino-border" />
 
-        {/* Progress line */}
+        {/* Animated progress line */}
         <motion.div
           className="absolute left-4 top-4 w-0.5 bg-ordino-primary"
           initial={{ height: 0 }}
