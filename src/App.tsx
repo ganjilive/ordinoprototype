@@ -22,6 +22,7 @@ const AutomationScriptGeneration = lazy(() => import('./pages/AutomationScriptGe
 const TestPlan = lazy(() => import('./pages/TestPlan').then(m => ({ default: m.TestPlan })));
 const RootCauseAnalysis = lazy(() => import('./pages/RootCauseAnalysis').then(m => ({ default: m.RootCauseAnalysis })));
 const TestExecution = lazy(() => import('./pages/TestExecution').then(m => ({ default: m.TestExecution })));
+const TestCaseGeneration = lazy(() => import('./pages/TestCaseGeneration').then(m => ({ default: m.TestCaseGeneration })));
 
 // Loading fallback
 function PageLoader() {
@@ -189,6 +190,14 @@ function App() {
             element={
               <Suspense fallback={<PageLoader />}>
                 <TestExecution />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/test-case-generation"
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <TestCaseGeneration />
               </Suspense>
             }
           />
