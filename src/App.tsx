@@ -19,6 +19,7 @@ const AutoHealingTests = lazy(() => import('./pages/AutoHealingTests').then(m =>
 const TestDesign = lazy(() => import('./pages/TestDesign').then(m => ({ default: m.TestDesign })));
 const RequirementAnalysis = lazy(() => import('./pages/RequirementAnalysis').then(m => ({ default: m.RequirementAnalysis })));
 const AutomationScriptGeneration = lazy(() => import('./pages/AutomationScriptGeneration').then(m => ({ default: m.AutomationScriptGeneration })));
+const TestPlan = lazy(() => import('./pages/TestPlan').then(m => ({ default: m.TestPlan })));
 
 // Loading fallback
 function PageLoader() {
@@ -162,6 +163,14 @@ function App() {
             element={
               <Suspense fallback={<PageLoader />}>
                 <AutomationScriptGeneration />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/test-plan"
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <TestPlan />
               </Suspense>
             }
           />
